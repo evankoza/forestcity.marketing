@@ -140,17 +140,37 @@ Requirements, in order of how badly they bite:
   by more than the bob travels, or a gap opens at the top of the movement.
 - **One subject, nothing else in the frame.**
 
-Then re-check `GAMMA` in `bird.js` — see below.
+Then re-check `GAMMA` and `COVER` in `bird.js` — see below. A softer
+cut-out than these three have wants `COVER` looked at before anything else.
 
 ### What happens to them at runtime
 
-Downsampled to one pixel per dither cell, tone-curved, Floyd-Steinberg error
-diffusion against the palette's actual luminances, blitted back up with
-smoothing off.
+Each cell reads the patch of sprite underneath it — how much of that patch
+the bird covers, and the alpha-weighted average colour of the part it does.
+A cell covered less than `COVER` is not painted at all; the rest are
+tone-curved, run through Floyd-Steinberg error diffusion against the
+palette's actual luminances, and blitted back up with smoothing off.
+
+Two details in that sentence are load-bearing, and both used to be otherwise:
+
+- **Coverage is averaged over the cell's footprint**, not sampled at its
+  centre. A leg three source pixels wide under a seven-pixel cell is a coin
+  toss to a point sample, which is why the feet and the thin end of the tail
+  used to come out as a different scatter of cells every time the window
+  changed size.
+- **Colour is alpha-weighted** — premultiplied in, divided back out. The
+  pixels around the cut-out are transparent BLACK, and any average that
+  counts their colour drags every edge cell dark.
+
+Error is diffused only into cells that are also the bird. What would have
+landed outside the silhouette is dropped, not redistributed: pushing it back
+into the few inked neighbours piles a whole edge's worth of error onto the
+edge itself, and the rim goes dark.
 
 ### Four inks
 
-`PAL` in `bird.js`: a white, two blues and a black, at a **5px cell**.
+`PAL` in `bird.js`: a white, two blues and a black, at a **5px cell** on a
+desktop and a **3px** one under 900px.
 
 ```
 WHITE  #F2F6FA   chest, cheek, wing bar
@@ -168,6 +188,13 @@ those two take the middle of the range, and BLACK is reserved for the bridle,
 the eye and the barring — a small share of the bird, and the whole of its
 face.
 
+The phone's smaller cell is not a second opinion about the pixel size, it is
+the same bird at a third of the width: `BIRD_W` is a share of the
+photograph's *displayed* width, a phone crops that photograph hard, and a 5px
+cell left the sprite 16 cells across — no crest, no bridle, no wing bar.
+3px brings it back to ~34 cells. `CELL_WIDE` / `CELL_NARROW` in `bird.js`,
+picked off the same 900px breakpoint the stylesheet stacks the hero at.
+
 **Everything but BLACK is lighter than the canopy behind it**, which is the
 one thing that matters here. A real jay against dark foliage is the *bright*
 object in the frame; an earlier version inked in the bird's true deep blue
@@ -175,7 +202,7 @@ lost the entire topside — crest, back, wing, tail — into the photo and left 
 floating pale chest. BLACK is only safe to include now because there is
 enough light ink around it to carry the silhouette.
 
-### The two knobs
+### The three knobs
 
 **The tone curve is stretched between the photo's own black and white
 points**, `SRC_BLACK` and `SRC_WHITE`, and `GAMMA` distributes the bird's
@@ -191,6 +218,24 @@ that speckle was the loudest thing left in the sprite. Holding it back lets
 flat areas stay flat and leaves the dithering to the transitions, where it is
 describing something. Much lower and it bands.
 
+**`COVER` is 0.35** — the share of a cell the bird has to cover before that
+cell is painted. It is what killed the white outline the bird used to wear.
+There was no threshold at all before: an edge cell was painted whatever it
+clipped, at a tone blended between the bird and PAPER in proportion to how
+little of it was covered, and a cell a tenth covered came out around 0.94 —
+not paper (1.0), but a dead ringer for WHITE (0.96), the brightest ink there
+is. Every sparsely clipped cell was therefore painted in the brightest ink in
+the palette, and against a dark canopy that is a halo. It showed worst along
+the belly, the tail and the feet, where the silhouette is thinnest and nearly
+every edge cell is a sparse one.
+
+0.35 rather than a half because the legs are about three source pixels wide
+against a seven-pixel cell on a desktop: at 0.5 they thin out and the bird
+loses its feet on a narrow window. Below about 0.25 the fringe starts growing
+back, in ink rather than in white. New art with a softer cut-out is the thing
+most likely to want this re-solved — judge it on the feet and the tail tip,
+not on the body.
+
 New photographs have a new exposure and will want `GAMMA` re-solved — score
 candidates on local density error in 8x8 cell blocks, not on matching palette
 percentages. Percentages are a summary; local density is what you see.
@@ -201,13 +246,26 @@ The nav and footer mark is the same `jay-left.png`, downsampled to 26 cells
 and split on luminance, inline in `index.html`. It is **not dithered**, and
 that is the point: at 26 cells the error diffusion is wider than the bird's
 features and the mark collapses into a rectangle of speckle. Solid blocks,
-threshold 0.52.
+thresholds 0.50 and 0.62.
 
-Its two inks are `--jay-mid` (light block) and `--jay` (dark block), and they
-are their own pair rather than the hero's. The mark is two areas of flat
+Its three inks are `--jay-mid` (light), `--jay` (mid) and `--jay-dark`
+(black), and they are their own set rather than the hero's. The mark is flat
 colour at 26px, so it needs real separation to read; when the site went dark
-both had to move up *and* apart, because the deep blue that worked on white
-paper simply disappears on black.
+the first two had to move up *and* apart, because the deep blue that worked on
+white paper simply disappears on black.
+
+`--jay-dark` is black, which on this page is not an ink at all: against
+`#080B09` those 58 cells read as holes in the bird. That is the trade the
+mark is making. The same geometry is the favicon and the card, where it sits
+on light and the black is what gives the jay its bridle, eye and wing barring.
+One token softens it if the holes ever win the argument.
+
+**Built by `src/mark2svg.js`**, which is the one thing here that used to be
+missing — the 26-cell mark was hand-made and could not be rebuilt. The script
+re-inks it without touching the silhouette: it reads back the cells the mark
+already occupies (the union of the ink groups, so it is idempotent) and only
+decides which ink goes in each. It writes all six inline copies, the favicon
+and `card/assets/mark.svg` in one pass, so do not hand-edit the rects.
 
 ## src/
 
@@ -218,6 +276,7 @@ be rebuilt:
 - `left look.png`, `right look.png` — the supplied jay photos
 - `prep-bird.py` — builds `jay-left.png` / `jay-right.png` from those two
 - `make-og.sh` — builds `og.jpg`, the link preview
+- `mark2svg.js` — re-inks the brand mark everywhere it appears
 - `mark2png.js`, `veil.js` — the two layers `make-og.sh` generates
 
 ## og.jpg — the link preview

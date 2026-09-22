@@ -43,7 +43,22 @@
   if (!cv || !cv.getContext || !photo) return;
   var ctx = cv.getContext('2d');
 
-  var CELL = 5;             // css px per dither cell — the pixel size
+  // CSS px per dither cell — the pixel size. There are two of them.
+  //
+  // The bird is drawn at a share of the PHOTOGRAPH's displayed width, and a
+  // phone shows that photograph in a band it crops hard: the same 5px cell
+  // that gives the bird 44 cells across on a desktop leaves it 16 on a
+  // phone. At 16 cells there is no crest, no bridle and no wing bar — the
+  // dither has nothing left to describe the bird WITH, and what lands on
+  // the branch reads as damage to the photograph rather than as an animal.
+  // 3px puts a phone back to ~33 cells, which is about where the face
+  // survives. It is still a chunky pixel where it matters: on a phone at
+  // 3x device pixel ratio that cell is nine device pixels to a side.
+  //
+  // resize() picks between them, off the same 900px breakpoint the
+  // stylesheet stacks the hero at.
+  var CELL_WIDE = 5, CELL_NARROW = 3;
+  var CELL = CELL_WIDE;
 
   // The two frames are the same bird with its head turned.
   //
@@ -131,7 +146,16 @@
   // life against a limb that heavy, deliberately — it is the brand mark of
   // the page, not a wildlife photograph, and at life size it read as a
   // detail rather than the subject.
-  var BIRD_W = 0.15;
+  //
+  // The phone gets a little more of the frame: 0.185. Below 900px the
+  // artwork is its own short band rather than the whole hero, the photo
+  // inside it is cropped to about a third of the width a desktop shows,
+  // and 0.15 of that is an 80px bird — small enough that it reads as a
+  // mark on the bark instead of the subject of the picture. The extra is
+  // deliberately small; much past this and the bird outgrows the limb it
+  // is standing on, which is the one thing tying it to the photograph.
+  var BIRD_W_WIDE = 0.15, BIRD_W_NARROW = 0.185;
+  var BIRD_W = BIRD_W_WIDE;
 
   // Tone curve. The source is a photograph, so its blacks and whites are
   // where the camera put them, not at 0 and 1: SRC_BLACK/SRC_WHITE are the
@@ -161,7 +185,34 @@
   // 0 the palest feathers land on solid white ink and no paper shows through
   // the bird at all. Lift it and the chest opens into holes — which on a
   // dark canopy reads as damage rather than as texture.
+  //
+  // It is also the switch for those holes: at 0 paper is not even a
+  // candidate inside the silhouette, so the bird cannot develop them by
+  // accident, which is what diffused error used to do at its edges.
   var INK_CEIL_MIX = 0;
+  var ALLOW_HOLES = INK_CEIL_MIX > 0;
+
+  // How much of a cell the bird has to cover before that cell is painted.
+  //
+  // This is the whole fix for the white outline the bird used to wear. There
+  // was no threshold before: a cell that merely clipped the edge was painted
+  // anyway, at a tone mixed between the bird and PAPER in proportion to how
+  // little of it was covered. A cell a tenth covered came out around 0.94 —
+  // which is not paper (1.0), but is a dead ringer for WHITE (0.96), the
+  // brightest ink in the palette. So every sparsely clipped edge cell was
+  // painted in the brightest ink there is, and against a dark canopy that is
+  // a halo. It was worst along the belly, the tail and the feet, because
+  // that is where the silhouette is thinnest and nearly every edge cell is a
+  // sparse one — and it came and went cell by cell, so it read as mess
+  // rather than as an outline.
+  //
+  // Now a cell is either in the bird or out of it, and the ones that are in
+  // are painted in the bird's OWN colour. 0.35 rather than a half because
+  // the legs are about three source pixels wide against a seven-pixel cell
+  // on a desktop: at 0.5 they thin out and the bird loses its feet on a
+  // narrow window. Below about 0.25 the old fringe starts growing back, in
+  // ink rather than in white.
+  var COVER = 0.35;
 
   // The palette. PAPER is never painted — it is the hole the photograph
   // shows through — so the bird is four inks and a silhouette.
@@ -220,29 +271,46 @@
 
   /* ---- dither a luminance grid onto a canvas ---------------- */
 
-  function ditherToCanvas(buf) {
+  // buf carries one luminance per cell; mask says which of those cells are
+  // the bird. Everything outside the mask is left alone — not painted, and
+  // not diffused into either, which is what keeps the speckle inside the
+  // silhouette instead of scattering it across the bark.
+  function ditherToCanvas(buf, mask) {
     var idx = new Uint8Array(cols * rows);
     var r, c, k, i, fwd, cn, b;
+    // Paper is a candidate only when the ceiling has been lifted above the
+    // lightest ink on purpose. Otherwise the inside of the bird is solid.
+    var q0 = ALLOW_HOLES ? 0 : 1;
+    // Error lands only on cells that are also the bird. What would have gone
+    // to a cell outside it is dropped rather than redistributed: pushing it
+    // back into the few inked neighbours piles a whole edge's worth of error
+    // onto the edge itself and the rim goes dark. Dropping it costs a little
+    // accuracy exactly one cell deep, where nothing is describing anything.
+    var push = function (j, w, err) {
+      if (j < 0 || j >= cols * rows || !mask[j]) return;
+      buf[j] += err * w;
+    };
     for (r = 0; r < rows; r++) {
       var l2r = (r & 1) === 0;
       for (k = 0; k < cols; k++) {
         c = l2r ? k : cols - 1 - k;
         i = r * cols + c;
+        if (!mask[i]) continue;                    // outside the bird
         var v = buf[i];
-        var best = 0, bd = Infinity;
-        for (var q = 0; q < PAL.length; q++) {
+        var best = q0, bd = Infinity;
+        for (var q = q0; q < PAL.length; q++) {
           var dd = v - PAL_LUM[q]; if (dd < 0) dd = -dd;
           if (dd < bd) { bd = dd; best = q; }
         }
         idx[i] = best;
         var err = (v - PAL_LUM[best]) * DIFFUSION;
         fwd = l2r ? 1 : -1; cn = c + fwd;
-        if (cn >= 0 && cn < cols) buf[i + fwd] += err * 0.4375;
+        if (cn >= 0 && cn < cols) push(i + fwd, 0.4375, err);
         if (r + 1 < rows) {
           b = i + cols;
-          if (c - fwd >= 0 && c - fwd < cols) buf[b - fwd] += err * 0.1875;
-          buf[b] += err * 0.3125;
-          if (cn >= 0 && cn < cols) buf[b + fwd] += err * 0.0625;
+          if (c - fwd >= 0 && c - fwd < cols) push(b - fwd, 0.1875, err);
+          push(b, 0.3125, err);
+          if (cn >= 0 && cn < cols) push(b + fwd, 0.0625, err);
         }
       }
     }
@@ -261,9 +329,9 @@
     return out;
   }
 
-  // Luminance -> the value the dither sees, for a cell that is INSIDE the
-  // bird. Outside, the caller uses paper instead; the two are mixed by alpha
-  // so the edge feathers rather than staircases.
+  // Luminance -> the value the dither sees. It is only ever asked about
+  // cells that are INSIDE the bird; cells outside it are not painted at all,
+  // so there is nothing here mixing the bird into paper.
   function tone(Y) {
     var t = (Y - SRC_BLACK) / (SRC_WHITE - SRC_BLACK);
     t = t < 0 ? 0 : t > 1 ? 1 : t;
@@ -333,13 +401,19 @@
       return null;
     }
     var n = c.width * c.height;
-    var lum = new Float32Array(n), alpha = new Float32Array(n);
+    var alpha = new Float32Array(n), plum = new Float32Array(n);
     for (var i = 0; i < n; i++) {
-      lum[i] = (px[i * 4] * 0.299 + px[i * 4 + 1] * 0.587 +
-                px[i * 4 + 2] * 0.114) / 255;
+      var lum = (px[i * 4] * 0.299 + px[i * 4 + 1] * 0.587 +
+                 px[i * 4 + 2] * 0.114) / 255;
       alpha[i] = px[i * 4 + 3] / 255;
+      // PREMULTIPLIED. The pixels around the bird are transparent BLACK, and
+      // any average that counts their colour drags the edge dark. Weighting
+      // each pixel's luminance by its own alpha, and dividing that weight
+      // back out later, means only the bird contributes colour to an edge
+      // cell — the matte cannot bleed into it either way.
+      plum[i] = lum * alpha[i];
     }
-    return { w: c.width, h: c.height, lum: lum, alpha: alpha };
+    return { w: c.width, h: c.height, alpha: alpha, plum: plum };
   }
 
   // The feet are the bottom of the silhouette. Deriving the anchor rather
@@ -384,15 +458,58 @@
     return t1 + (t2 - t1) * fy;
   }
 
+  // What a single dither cell sees of the sprite: how much of the cell the
+  // bird covers, and what colour that covered part is.
+  //
+  // Both are averaged over the cell's whole FOOTPRINT in the source rather
+  // than read off one point at its centre, and that is the other half of the
+  // outline fix. A point sample of a leg three source pixels wide, under a
+  // cell seven across, is a coin toss — the cell either lands on the leg or
+  // beside it — so the feet and the thin end of the tail came out as a
+  // different scatter of cells every time the window changed size.
+  //
+  // hw is half a cell measured in source pixels. When it drops under half a
+  // pixel the bird is being drawn LARGER than its own sprite and there is no
+  // footprint left to average; below that the bilinear sample is the honest
+  // answer, taken on the premultiplied channel for the same reason the box
+  // average is.
+  function cellStats(fr, sx, sy, hw) {
+    if (hw < 0.5) {
+      var a = sample(fr, fr.alpha, sx, sy);
+      var p = sample(fr, fr.plum, sx, sy);
+      return { a: a, y: a > 0.002 ? p / a : 1 };
+    }
+    var x0 = Math.round(sx - hw), x1 = Math.round(sx + hw) - 1;
+    var y0 = Math.round(sy - hw), y1 = Math.round(sy + hw) - 1;
+    if (x1 < x0) x1 = x0;
+    if (y1 < y0) y1 = y0;
+    var sa = 0, sp = 0, n = 0, x, y, i;
+    // Anything off the edge of the sprite counts as empty, not as missing:
+    // the divisor is the whole footprint. Averaging only the part that
+    // exists would report a cell hanging half off the sprite as fully
+    // covered, and the bird would grow a lip along the canvas edge.
+    for (y = y0; y <= y1; y++) {
+      if (y < 0 || y >= fr.h) { n += x1 - x0 + 1; continue; }
+      for (x = x0; x <= x1; x++) {
+        n++;
+        if (x < 0 || x >= fr.w) continue;
+        i = y * fr.w + x;
+        sa += fr.alpha[i]; sp += fr.plum[i];
+      }
+    }
+    return { a: n ? sa / n : 0, y: sa > 0.002 ? sp / sa : 1 };
+  }
+
   // x0/y0 is the sprite canvas's origin. It is passed in rather than
   // derived per sprite, so the legs and both bodies land on exactly the
   // same grid — that shared grid is what keeps them registered.
   function build(fr, x0, y0, bw) {
     var scale = bw / fr.w;
     var bh = fr.h * scale;
+    var hw = CELL / (2 * scale);          // half a cell, in source pixels
 
     var buf = new Float32Array(cols * rows);
-    for (var i = 0; i < buf.length; i++) buf[i] = 1;
+    var mask = new Uint8Array(cols * rows);
     var c0 = Math.max(0, Math.floor(x0 / CELL));
     var c1 = Math.min(cols - 1, Math.ceil((x0 + bw) / CELL));
     var r0 = Math.max(0, Math.floor(y0 / CELL));
@@ -401,15 +518,13 @@
       var y = r * CELL + CELL * 0.5;
       for (var c = c0; c <= c1; c++) {
         var x = c * CELL + CELL * 0.5;
-        var sx = (x - x0) / scale, sy = (y - y0) / scale;
-        var a = sample(fr, fr.alpha, sx, sy);
-        if (a <= 0.004) continue;                  // outside the bird
-        if (a > 1) a = 1;
-        var inked = tone(sample(fr, fr.lum, sx, sy));
-        buf[r * cols + c] = a * inked + (1 - a) * 1;   // feather into paper
+        var s = cellStats(fr, (x - x0) / scale, (y - y0) / scale, hw);
+        if (s.a < COVER) continue;                 // not enough bird here
+        mask[r * cols + c] = 1;
+        buf[r * cols + c] = tone(s.y);             // the bird's own colour
       }
     }
-    return ditherToCanvas(buf);
+    return ditherToCanvas(buf, mask);
   }
 
   /* ---- assembly --------------------------------------------- */
@@ -456,8 +571,21 @@
     var rect = cv.getBoundingClientRect();
     var w = Math.max(1, Math.round(rect.width));
     var h = Math.max(1, Math.round(rect.height));
-    if (w === W && h === H) return;
-    W = w; H = h;
+    // Cell size and bird size are a function of the LAYOUT, not of the
+    // canvas. Below 900px the stylesheet gives the artwork its own short
+    // band and everything in it is drawn small, so the same query is asked
+    // here rather than a second number being kept — the two cannot drift
+    // apart if there is only one of them.
+    var narrow = window.matchMedia
+      ? window.matchMedia('(max-width:900px)').matches
+      : window.innerWidth <= 900;
+    var cell = narrow ? CELL_NARROW : CELL_WIDE;
+    var birdW = narrow ? BIRD_W_NARROW : BIRD_W_WIDE;
+    // The breakpoint is checked alongside the box, not instead of it: a
+    // window can cross 900px without the canvas changing size at all, and
+    // the bird would keep the wrong grid until something else resized it.
+    if (w === W && h === H && cell === CELL && birdW === BIRD_W) return;
+    W = w; H = h; CELL = cell; BIRD_W = birdW;
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     cv.width = Math.round(W * dpr);
     cv.height = Math.round(H * dpr);

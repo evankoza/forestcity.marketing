@@ -52,12 +52,20 @@
   /* The jay. The only blue on the page - its four inks in the hero
      and the brand mark - and that is the point: it is what makes the
      bird lift off a green hero instead of sinking into it. */
-  /* The brand mark is two blocks of flat colour, so its pair needs real
-     separation to read at 26px. On the old white page that was a mid blue
+  /* The brand mark is three blocks of flat colour, so they need real
+     separation to read at 26px. On the old white page the pair was a mid blue
      against a deep one; on black the deep one vanishes, so both moved up and
-     apart: --jay-mid is the light block, --jay the dark. */
-  --jay:      #5A8FC7;   /* mark: the dark block */
+     apart: --jay-mid is the light block, --jay the mid.
+
+     --jay-dark is black, and on this page it does NOT read as an ink — the
+     page is #080B09, so those 58 cells come out as holes in the bird rather
+     than as barring. That is deliberate: the same mark is the favicon and the
+     printed card, where it sits on light and the black is what gives the jay
+     its bridle and eye. Soften it here by moving this one token; the geometry
+     does not change. */
+  --jay:      #5A8FC7;   /* mark: the mid block */
   --jay-mid:  #C2D9F0;   /* mark: the light block */
+  --jay-dark: #000000;   /* mark: bridle, eye, wing barring */
   --jay-pale: #BBD3EE;   /* the hero headline's italic accent */
 
 
@@ -1252,25 +1260,58 @@ p:last-child{ margin-bottom:0; }
    sit. It runs a little heavier toward the foot of the hero because that is
    where the copy is densest. */
 /* On a phone the hero stops being a composition and becomes two things
-   stacked: a band of artwork, then the copy underneath it.
+   stacked: a band of artwork, and the copy climbing into the foot of it.
 
-   This is not a preference. The perch is a fixed point in the photograph,
-   and on a tall narrow viewport object-fit:cover scales the photo by HEIGHT,
-   which means the photo is always exactly as tall as its box and the perch
-   always lands at 43.2% of it — object-position cannot move it, because
-   there is no vertical overflow left to shift. Overlaid on a full-bleed
-   phone hero that puts a 150px dithered bird straight through the middle of
-   the body copy, and no amount of veil rescues text with speckle behind it.
+   The stack is not a preference. The perch is a fixed point in the
+   photograph, and on a tall narrow viewport object-fit:cover scales the
+   photo by HEIGHT, which means the photo is always exactly as tall as its
+   box and the perch always lands at 43.2% of it — object-position cannot
+   move it, because there is no vertical overflow left to shift. Overlaid on
+   a full-bleed phone hero that puts a 150px dithered bird straight through
+   the middle of the body copy, and no amount of veil rescues text with
+   speckle behind it.
 
-   Giving the artwork its own box fixes it at the root: the band is ~46vh, so
-   43.2% of the band is ~160px down, which is where the bird goes — and the
-   copy now starts below the band rather than underneath the bird. The bird
-   shrinks to match, because BIRD_W is a share of the photo's displayed
-   width and the photo in a 46vh band is a much smaller photo. None of that
-   needs a second set of numbers in the JS; it reads the box it is given. */
+   Giving the artwork its own box fixes it at the root: the bird goes 43.2%
+   of the way down the band, and the copy starts below it rather than
+   underneath it. The bird sizes itself to match, because BIRD_W is a share
+   of the photo's DISPLAYED width and the photo inside a short band is a
+   much smaller photo. None of that needs a second set of numbers in the JS;
+   it reads the box it is given.
+
+   --band and --lift: why the copy overlaps the artwork at all
+
+   The band was 46vh and the copy started under it, which on an 812px phone
+   put the first word 487px down the screen — three fifths of the phone
+   spent on a photograph, with the services rail two screens away and the
+   whole of the middle of the band empty bark. The band is shorter now, and
+   the copy is pulled back UP into the last of it on a negative margin.
+
+   --lift is a SHARE of the band rather than a length, and that is what
+   keeps the bird clear at every viewport with no second number to maintain:
+   the feet land at ~46% of the band, so a 40% lift always stops about a
+   seventh of the band below them. Past about .5 the panel starts climbing
+   over the toes.
+
+   The panel fades in over its first 48px instead of starting solid. It is
+   arriving partway up the band now, where the veil has not finished
+   darkening the photo, and a hard edge there reads as a band cut short
+   rather than as a join. Fading lets the panel finish the grade the veil
+   started — the photo still disappears exactly where it used to, it just
+   gets there faster. No text is set inside the fade: the padding above the
+   kicker is longer than the fade is, so the copy always starts on solid
+   ground and nothing is read off bark. */
 @media (max-width:900px){
-  .hero{ display:block; min-height:0; }
-  .hero__art{ position:relative; height:46vh; min-height:270px; max-height:420px; }
+  .hero{
+    display:block; min-height:0;
+    /* svh, with vh as the fallback — the same pair the desktop hero's own
+       min-height uses. A phone's vh is the URL-bar-hidden height, so on
+       first load a vh band is taller than the screen actually is and takes
+       the services rail down with it. */
+    --band:clamp(250px,38vh,340px);
+    --band:clamp(250px,38svh,340px);
+    --lift:calc(var(--band) * 0.40);
+  }
+  .hero__art{ position:relative; height:var(--band); }
   /* Shifted left-of-centre crop. The perch sits at 21.5% across the photo,
      and a phone's cover crop is so tight that at the desktop's 32% the
      bird's anchor lands about 50px in — with the tail reaching another 55px
@@ -1278,7 +1319,7 @@ p:last-child{ margin-bottom:0; }
      the whole bird back into frame. bird.js reads this value rather than
      keeping its own, so the perch follows it without a second number. */
   .hero__photo{ object-position:18% 52%; }
-  /* no text sits on the band now, so the grade drops to a brand tint */
+  /* no text sits on the band itself, so the grade drops to a brand tint */
   .hero__veil{
     background:linear-gradient(180deg,
       rgba(11,31,21,.16) 0%, rgba(11,31,21,.24) 62%, rgba(11,20,16,.97) 100%);
@@ -1287,11 +1328,55 @@ p:last-child{ margin-bottom:0; }
      so the join reads as one field rather than a photo with a caption */
   .hero__inner{
     grid-template-columns:1fr;
-    background:#0B1410;
-    padding-block:clamp(30px,5vh,46px) clamp(44px,8vh,72px);
+    margin-top:calc(var(--lift) * -1);
+    background:linear-gradient(180deg,rgba(11,20,16,0) 0,#0B1410 48px);
+    padding-block:64px clamp(28px,4vh,40px);
   }
   .hero__copy{ grid-column:1; }
   .hero__marks{ gap:6px 16px; font-size:11px; }
+}
+
+/* The phone, where the fold is the argument.
+
+   Everything down to the services rail has to fit in about 690px once the
+   nav and the rail itself have taken their share. That rail is the line
+   that says what the shop actually sells, and a hero that pushes it off the
+   bottom of a phone hides the answer behind a scroll. The lift above pays
+   for most of it; the rest comes off here, in this order:
+
+   - The ghost "What we do" button. It is a jump link to a section the rail
+     underneath it is already advertising, and it is in the menu as well.
+     The quote button, which is the one that matters, keeps the full width.
+   - The credential row. "Local to London" is the kicker two inches above
+     it, "you control everything" is a whole numbered section further down,
+     and fixed quotes are the first thing the pricing panels say — on a
+     phone it is a summary of three things the page makes properly
+     elsewhere. It comes back at 601px.
+   - Air: a few pixels out of each gap between the blocks.
+
+   None of the copy itself is cut. If this ever has to give further, the
+   next thing to go is the muted line under the lead, not a sentence out
+   of the lead. */
+@media (max-width:600px){
+  .hero .kicker{ margin-bottom:12px; }
+  .hero__title{ margin-bottom:18px; }
+  .hero__cta{ margin-top:24px; }
+  .hero .hero__cta .btn--pixel-ghost{ display:none; }
+  .hero__marks{ display:none; }
+}
+
+/* The headline is written in two lines and has a <br> in it saying so. The
+   38px floor is the size the first of them, "Your brand's image,", stops
+   fitting at: it needs about 345px and a 360px phone has 316 between the
+   gutters, so the line breaks itself and the headline becomes four lines —
+   74px of hero, spent on a wrap nobody asked for, and the services rail
+   goes back under the fold.
+
+   8.6vw is that measurement turned into a rule rather than a second
+   breakpoint: it tracks the gutters down to a 320px phone and hands back to
+   the flat 38px at 442, which is where 38 fits again. */
+@media (max-width:440px){
+  .hero__title{ font-size:min(38px,8.6vw); }
 }
 
 /* ==============================================================

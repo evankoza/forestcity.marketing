@@ -209,12 +209,19 @@ this out before it settled:
 ### Four inks, and a dither held back
 
 The jay is dithered against **a white, two blues and a black** — `PAL` in
-`bird.js` — at a **5px cell**. Two inks at 4px read as speckle rather than
-as a bird; four inks at 3px went the other way and came out almost
-photographic. 5px with four inks is the chunky end that still carries the
-crest, the bridle and the wing.
+`bird.js` — at a **5px cell** on a desktop and a **3px** one under 900px.
+Two inks at 4px read as speckle rather than as a bird; four inks at 3px went
+the other way and came out almost photographic. 5px with four inks is the
+chunky end that still carries the crest, the bridle and the wing.
 
-Two knobs matter:
+The phone gets the smaller cell because it gets a much smaller bird — the
+sprite is a share of the photograph's *displayed* width, and a phone crops
+that photograph hard, so a 5px cell left the bird 16 cells across: no crest,
+no bridle, no wing bar, a blue smear on the bark. 3px puts it back to ~34
+cells, which is about where the face survives, and at a phone's 3x pixel
+ratio that cell is still nine device pixels to a side.
+
+Three knobs matter:
 
 - `GAMMA` is back to **1.0**. It was 1.4 when there were two inks, doing work
   the palette could not — forcing enough weight into the dark ink to stop the
@@ -226,6 +233,22 @@ Two knobs matter:
   areas — the chest, the cheek — stay flat and leaves the dithering to the
   transitions, where it is actually describing something. Much lower and it
   bands.
+- `COVER` is **0.35**: how much of a cell the bird has to cover before that
+  cell is painted at all. A cell is either in the silhouette or out of it,
+  and the ones that are in are painted in the bird's *own* colour.
+
+  It replaced a blend, and the blend is what put the ragged white rim along
+  the belly, the tail and the feet. Edge cells used to be mixed between the
+  bird and paper in proportion to how little of them was covered, and a cell
+  a tenth covered came out at 0.94 — which is not paper (1.0), but is a dead
+  ringer for `WHITE` (0.96), the brightest ink in the palette. So every
+  sparsely clipped edge cell was painted in the brightest ink there is, which
+  against a dark canopy is a halo. Two smaller things went with it: coverage
+  is now averaged over the cell's whole footprint in the sprite instead of
+  sampled at its centre, which is what stopped the rim appearing and
+  disappearing cell by cell as the window resized, and an edge cell's colour
+  is an alpha-weighted average, so the transparent black around the sprite
+  cannot bleed into it either.
 
 All four inks are lighter than the canopy except `BLACK`, which is only safe
 to include because there is enough light ink around it to carry the
@@ -234,16 +257,34 @@ silhouette. See `assets/img/README.md`.
 ### The phone layout is a different composition, for a real reason
 
 Under 900px the hero stops being left-art/right-copy and becomes a band of
-artwork with the copy underneath.
+artwork with the copy climbing into the foot of it.
 
-That is forced, not preferred. On a tall narrow viewport cover scales the
-photo by **height**, so the photo is exactly as tall as its box, there is no
-vertical overflow left, and `object-position` cannot shift anything. The
+The stack is forced, not preferred. On a tall narrow viewport cover scales
+the photo by **height**, so the photo is exactly as tall as its box, there is
+no vertical overflow left, and `object-position` cannot shift anything. The
 perch therefore lands at 43.2% of the hero's height no matter what you do —
 which, on a full-bleed phone hero, is straight through the middle of the body
-copy. Giving the artwork its own ~46vh box fixes it at the source: 43% of the
-band is near the top of the screen, and the copy starts below the band. The
-bird shrinks to match on its own, because its size is a share of the photo.
+copy. Giving the artwork its own box fixes it at the source: 43% of the band
+is near the top of the screen, and the copy starts below the bird. The bird
+sizes itself to match, because its size is a share of the photo.
+
+**The copy overlaps the band on purpose.** `--band` and `--lift` in the 900px
+block: the band is `clamp(250px,38svh,340px)`, and the copy is pulled back up
+into the last 40% of it on a negative margin, its panel fading in over 48px
+rather than butting into the photograph with a hard edge. `--lift` is a
+*share* of the band rather than a length, which is what keeps the bird clear
+at every viewport without a second number to maintain — the feet land at ~46%
+of the band, so a 40% lift always stops about a seventh of the band below
+them.
+
+The point of all of it is the services rail. Everything down to that rail has
+to fit in about 690px once the nav and the rail itself have taken their
+share, or the one line that says what the shop actually sells sits behind a
+scroll. The lift pays for most of it; under 600px the ghost "What we do"
+button and the credential row come off as well — a jump link the rail
+underneath is already advertising, and a summary of three things the page
+makes properly elsewhere. Both come back at 601px, and none of the copy
+itself is cut.
 
 ### The veil weight is measured
 
@@ -314,11 +355,16 @@ That stray `1px` is the nav's bottom border, which sits **outside**
 around it. Without it the rail ends exactly one pixel below the fold,
 which is the most annoying possible amount.
 
-**This only holds on the two-column layout.** Under 900px the hero stacks
-an artwork band above the copy and is content-driven, roughly 1076px on a
-375x812 phone — there is no way to fit a photo band, a headline, two
-paragraphs, two buttons and a credentials line into 687px without gutting
-them, so on a phone the rail is just below the fold.
+**Under 900px it is bought a different way.** There the hero stacks an
+artwork band above the copy and is content-driven, so subtracting a token
+from a viewport height means nothing to it. It came to roughly 1076px on a
+375x812 phone, which put the rail two thirds of a screen below the fold —
+a photo band, a headline, two paragraphs, two buttons and a credentials row
+will not fit in 687px with anything left of them. It is ~697px now: a
+shorter band, the copy lifted into the foot of it, and the ghost button and
+the credential row dropped under 600px. That puts the rail on the fold on a
+phone too — the whole of it from 812px of viewport up, its top edge on the
+shortest phones still in circulation. See "The phone layout" above.
 
 Two identical rows sit side by side and the track translates by exactly
 half its width, so the moment row one has left, row two is precisely where
