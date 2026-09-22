@@ -1,9 +1,9 @@
 /* Rasterise the brand mark straight out of index.html.
 
-   The mark is 26x27 flat cells in two inks, already written as <rect>s in
-   the nav's inline SVG. Rather than re-typing 55 rectangles into a second
-   file that can drift, this reads them back out of the page and paints
-   them into a 26x27 RGBA PNG. ffmpeg then scales that up with nearest
+   The mark is 26x27 flat cells in three inks, already written as <rect>s in
+   the nav's inline SVG by mark2svg.js. Rather than re-typing 91 rectangles
+   into a second file that can drift, this reads them back out of the page
+   and paints them into a 26x27 RGBA PNG. ffmpeg then scales that up with nearest
    neighbour, so the og:image carries the same mark, cell for cell.
 
    Usage: node mark2png.js <index.html> <out.png>
@@ -22,10 +22,12 @@ const svgStart = html.indexOf('<svg class="brand__mark"');
 const svgEnd = html.indexOf('</svg>', svgStart);
 const svg = html.slice(svgStart, svgEnd);
 
-// Two <g>s, each one ink. fill="var(--jay-mid)" is the light block.
+// Three <g>s, each one ink. fill="var(--jay-mid)" is the light block. These
+// have to match :root in styles.css and the INKS table in mark2svg.js.
 const INK = {
   '--jay-mid': [0xC2, 0xD9, 0xF0],
   '--jay': [0x5A, 0x8F, 0xC7],
+  '--jay-dark': [0x00, 0x00, 0x00],
 };
 
 const px = Buffer.alloc(W * H * 4, 0); // transparent
