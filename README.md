@@ -109,6 +109,11 @@ check they are still right:
 - **`robots.txt` and `sitemap.xml`** — the checker on this very page reads
   both on other people's sites; it was a bad look not to have them.
 - **`404.html`**.
+- **A canonical URL and `ProfessionalService` JSON-LD** on `index.html`. The
+  checker on this page scores other people 8 points for business markup and 5
+  for a canonical; the site was failing both of its own tests. The markup
+  carries a locality and a province but no street, which is what a
+  service-area business is supposed to do.
 
 ---
 
