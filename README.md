@@ -1,4 +1,4 @@
-# Forest City Marketing — marketing site
+# London Marketing Solutions — marketing site
 
 Static site. No build step, no dependencies, no framework.
 
@@ -90,9 +90,9 @@ issued for.
 Record (permanent / 301), not through Pages. GitHub Pages serves exactly one
 custom domain, so the second one can only ever be a registrar-level bounce.
 
-The brand is still Forest City Marketing and the **email has not moved** —
-`hello@forestcity.marketing` is still the address on the page, in the mailto
-fallback and in the SEO checker's error copy. The forwarder for it lives at
+The brand is now London Marketing Solutions, but the **email has not moved**
+— `hello@forestcity.marketing` is still the address on the page, in the
+mailto fallback and in the SEO checker's error copy. The forwarder for it lives at
 that domain's registrar. If mail ever moves to the `.ca`, it is a separate
 change in five files; search for `@forestcity.marketing` and you will find all
 of them.

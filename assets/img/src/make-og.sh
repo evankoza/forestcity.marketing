@@ -53,8 +53,8 @@ ffmpeg -y -hide_banner -v error \
 [bg][1:v]overlay=0:0[v1];\
 [2:v]scale=286:297:flags=neighbor[jay];\
 [v1][jay]overlay=848:250[v2];\
-[v2]drawtext=fontfile=DepartureMono.otf:text='FOREST CITY':fontsize=80:fontcolor=0xF3F6F2:x=64:y=322,\
-drawtext=fontfile=DepartureMono.otf:text='MARKETING':fontsize=80:fontcolor=0x5CBF8D:x=64:y=410,\
+[v2]drawtext=fontfile=DepartureMono.otf:text='LONDON MARKETING':fontsize=80:fontcolor=0xF3F6F2:x=64:y=322,\
+drawtext=fontfile=DepartureMono.otf:text='SOLUTIONS':fontsize=80:fontcolor=0x5CBF8D:x=64:y=410,\
 drawbox=x=66:y=518:w=54:h=3:color=0x5CBF8D@1:t=fill,\
 drawtext=fontfile=DepartureMono.otf:text='WEBSITES / SIGNS / ADS / SEO':fontsize=25:fontcolor=0xBFCAC1:x=66:y=544,\
 drawtext=fontfile=DepartureMono.otf:text='LONDON, ONTARIO':fontsize=25:fontcolor=0x8E9A90:x=66:y=578[out]" \

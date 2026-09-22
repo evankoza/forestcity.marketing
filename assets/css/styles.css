@@ -1,5 +1,5 @@
 /* ==============================================================
-   Forest City Marketing - London, Ontario
+   London Marketing Solutions - London, Ontario
    Palette + type tokens live here. Rebrand = edit this block.
    ============================================================== */
 
@@ -1161,6 +1161,20 @@ p:last-child{ margin-bottom:0; }
   .nav__inner{ gap:14px; }
   .nav__links a{ padding:7px 10px; }
   .nav__cta{ padding:10px 15px; }
+}
+
+/* A fourth rung, 15px, keeping the ladder on its even steps of three:
+   24 / 21 / 18 / 15. The name is the reason it needs one. "London
+   Marketing Solutions" is five characters longer than the name it
+   replaced, and at 18px it measures 240px where the old one measured 185.
+   That leaves 14px between the wordmark and the hamburger at 375px; at
+   360 they touch; at 320 the row is 331px wide and the whole PAGE scrolls
+   sideways, which is the one thing the nav must never do. 15px brings the
+   word back to 200 and the brand to 236, clear of the toggle all the way
+   down to 320. The breakpoint is 400 rather than 375 so the step lands
+   before the collision instead of on top of it. */
+@media (max-width:400px){
+  .brand__word{ font-size:15px; }
 }
 
 @media (max-width:760px){
