@@ -12,6 +12,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "4322"],
       "port": 4322
+    },
+    {
+      "name": "forestcity-card",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4323"],
+      "port": 4323
     }
   ]
 }
