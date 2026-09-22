@@ -77,7 +77,28 @@ check they are still right:
   **Create that forwarder at the registrar or mail to it bounces.**
 - `226 378 5926` / `tel:+12263785926` — `index.html` ×2, `privacy.html` ×2,
   `404.html`
-- `CNAME` is `forestcity.marketing`
+
+### Two domains, and which one is real
+
+**`londonmarketingsolutions.ca` is the canonical address.** Every absolute URL
+in the site points at it — `<link rel=canonical>`, `og:url`, `og:image`, the
+JSON-LD `@id` and `url`, `sitemap.xml`, and the `Sitemap:` line in
+`robots.txt`. `CNAME` holds it and it is the domain the TLS certificate is
+issued for.
+
+**`forestcity.marketing` is a redirect**, done at Namecheap with a URL Redirect
+Record (permanent / 301), not through Pages. GitHub Pages serves exactly one
+custom domain, so the second one can only ever be a registrar-level bounce.
+
+The brand is still Forest City Marketing and the **email has not moved** —
+`hello@forestcity.marketing` is still the address on the page, in the mailto
+fallback and in the SEO checker's error copy. The forwarder for it lives at
+that domain's registrar. If mail ever moves to the `.ca`, it is a separate
+change in five files; search for `@forestcity.marketing` and you will find all
+of them.
+
+If you ever flip the canonical domain back, the rule is: replace
+`https://<domain>` everywhere, leave `@<domain>` alone.
 
 ### Also outstanding
 
