@@ -933,6 +933,36 @@ p:last-child{ margin-bottom:0; }
 .seo__row[data-state=fail] h4{ color:var(--bad); }
 .seo__row p{ margin:0; font-size:14.5px; color:var(--ink-2); }
 
+/* -- the gate ------------------------------------------------
+   Three findings show; anything past that sits behind this tile.
+   It stays a row so the two-column grid keeps its rhythm, but it
+   is the only one that is a link, so the padding moves onto the
+   <a> and the whole tile is the hit area - a 13px uppercase h4
+   is not something anyone should have to aim at.
+
+   Two squares rather than one, the second dimmed: one square in
+   forest green would read as a fourth result state. Two read as
+   "there is more of this". */
+.seo__row--held{ background:#0D1A13; padding:0; }
+.seo__row--held::before{
+  background:none; box-shadow:inset 0 0 0 2px var(--forest);
+}
+.seo__row--held::after{
+  content:""; position:absolute; left:22px; top:40px;
+  width:11px; height:11px; background:var(--forest); opacity:.38;
+}
+.seo__row--held a{
+  display:block; padding:20px 22px 20px 44px;
+  color:inherit; text-decoration:none;
+}
+.seo__row--held a:hover{ background:rgba(92,191,141,.09); }
+.seo__row--held a:focus-visible{
+  outline:2px solid var(--forest-bright); outline-offset:-2px;
+}
+.seo__row--held h4{ color:var(--forest); }
+.seo__row--held a:hover h4{ color:var(--forest-bright); }
+.seo__row--held p{ color:var(--ink-3); }
+
 .seo__cta{ margin-top:28px; }
 
 @media (max-width:820px){
@@ -1248,4 +1278,75 @@ p:last-child{ margin-bottom:0; }
   }
   .hero__copy{ grid-column:1; }
   .hero__marks{ gap:6px 16px; font-size:11px; }
+}
+
+/* ==============================================================
+   LEGAL PAGES  (privacy.html)
+
+   One column of running text, and the only place on the site with
+   no photograph, no panel and no pixel art. That is deliberate: a
+   privacy policy that has been art-directed reads as something
+   being sold rather than something being disclosed.
+
+   The measure is 68ch rather than the 62 used for section leads.
+   Leads are two sentences and want to feel spoken; this is read
+   in paragraphs, and at 62 the list items below wrap every third
+   word.
+   ============================================================== */
+.legal{ padding-block:clamp(48px,7vw,88px) clamp(72px,10vw,120px); }
+
+.legal .section__head{ margin-bottom:clamp(32px,4vw,48px); }
+.legal .section__title{ margin-bottom:24px; }
+
+.legal__stamp{
+  font-family:var(--font-mono); font-size:13px; color:var(--ink-3);
+  margin-top:20px;
+}
+
+/* h2 opens a clause, so it gets air above it and a hairline to sit
+   on. h3 is a sub-point inside one and gets neither - it is set in
+   the pixel face instead, which separates it without a second rule
+   stacking up three lines from the first. */
+.legal h2{
+  font-family:var(--font-display);
+  font-size:clamp(22px,2.4vw,27px); font-weight:700;
+  color:var(--ink);
+  margin:clamp(40px,5vw,60px) 0 16px;
+  padding-top:clamp(28px,3.5vw,40px);
+  border-top:1px solid var(--line);
+}
+.legal .section__head + h2{ margin-top:0; }
+
+.legal h3{
+  font-family:var(--font-pixel);
+  font-size:16px; font-weight:400; letter-spacing:.02em;
+  color:var(--forest);
+  margin:32px 0 12px;
+}
+
+.legal p,
+.legal__list{ color:var(--ink-2); max-width:68ch; }
+.legal p{ font-size:16.5px; }
+
+.legal__list{
+  margin:0 0 1em; padding-left:0; list-style:none;
+  font-size:16.5px;
+}
+.legal__list li{
+  position:relative; padding-left:26px; margin-bottom:.85em;
+}
+/* a square, not a disc: the bullet is the same 4px cell the brand
+   mark and the buttons are built out of */
+.legal__list li::before{
+  content:''; position:absolute; left:4px; top:.62em;
+  width:4px; height:4px; background:var(--forest);
+}
+.legal__list li:last-child{ margin-bottom:0; }
+.legal strong{ color:var(--ink); font-weight:600; }
+
+.legal__back{
+  margin-top:clamp(48px,6vw,72px);
+  padding-top:28px;
+  border-top:1px solid var(--line);
+  font-family:var(--font-mono); font-size:14px;
 }

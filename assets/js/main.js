@@ -19,7 +19,13 @@
   var nav = document.getElementById('nav');
   var navLinks = [].slice.call(document.querySelectorAll('.nav__links a'));
   var sections = navLinks.map(function (a) {
-    return document.querySelector(a.getAttribute('href'));
+    /* On every page but the home page these point back at
+       index.html#services and friends, which is not a selector -
+       querySelector throws on it and takes the whole file down with
+       it, footer year and all. Only in-page hashes get spied on;
+       off-page links have no section here to be "in". */
+    var href = a.getAttribute('href') || '';
+    return href.charAt(0) === '#' ? document.querySelector(href) : null;
   });
 
   if (nav) {

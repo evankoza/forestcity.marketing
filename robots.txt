@@ -1,0 +1,7 @@
+# forestcity.marketing
+# Everything here is meant to be found. Nothing is gated.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://forestcity.marketing/sitemap.xml

@@ -4,12 +4,21 @@ Static site. No build step, no dependencies, no framework.
 
 ```
 index.html
+privacy.html           <- the privacy policy
+404.html               <- what GitHub Pages serves for a bad path
+robots.txt
+sitemap.xml
 assets/css/styles.css
 assets/js/bird.js      <- the hero bird
 assets/js/main.js      <- nav + quote form
 assets/js/seo.js       <- the free SEO checker
 assets/img/            <- artwork; see assets/img/README.md
+assets/fonts/          <- Departure Mono + its OFL
 ```
+
+`404.html` is the one file whose links are root-absolute (`/index.html`, not
+`index.html`). GitHub Pages serves it for a bad path at *any* depth, so a
+relative href in it would resolve against a directory that does not exist.
 
 **Serve the folder — do not open `index.html` off disk:**
 
@@ -34,40 +43,72 @@ fact that this company sells more than websites.
 
 ## Before this goes live
 
-Everything in brackets is a placeholder. Search for the string and replace it.
+### The one that matters: the company name
+
+The business name **London Marketing Solutions Ltd.** is reserved and the
+incorporation is filed but *not yet granted* — no certificate, no OCN. Until
+that lands, nothing on this site may call itself "Ltd.", because naming a
+corporation that does not exist yet is the only thing in this list that could
+actually bite.
+
+Two places are written and commented for the swap, and no others:
+
+- `index.html`, the footer copyright — search `SWAP ON INCORPORATION`
+- `privacy.html`, the "who is asking" clause — same marker
+
+Each comment contains the exact replacement line. Do both at once, add the
+HST number to the footer when you register for one, and bump the date at the
+top of `privacy.html`.
+
+### Still your call
 
 | What | Where | Notes |
 |---|---|---|
-| `[$ your cap]` | `#buyout` | The most you'll credit against a buyout |
-| `[$ quoted]`, `[$ remaining]`, `[$ the difference]` | `#buyout` | Illustrative buyout maths |
-| `og:image` | `<head>` | Link previews are blank until this exists. 1200×630. |
-| Company reg / HST | footer | If applicable |
 | "within two working days" | `#quote`, FAQ | Only promise what you'll hit |
+| `$ quoted`, `$ remaining`, `$ the difference` | `#buyout` | Deliberately symbolic — real figures were tried there and looked like a quote rather than a worked example. Leave them unless you want the card to name numbers. |
+| The SEO checker's proxy | `seo.js`, `ENDPOINT` | Still the public reader. Stand your own up before you put ad spend behind the tool. |
+| The quote form's back end | `index.html`, `data-endpoint` | Empty, so the form opens a pre-filled email instead of POSTing. **If you fill this in, the "what you hand us on purpose" clause in `privacy.html` becomes false** — it says nothing is transmitted. There is a comment there saying so. |
 
 Contact details are **already set** and are carried over from We Run Web —
 check they are still right:
 
-- `hello@forestcity.marketing` — `index.html` ×2, `main.js`, `seo.js` ×2.
+- `hello@forestcity.marketing` — `index.html` ×3, `privacy.html` ×5,
+  `404.html`, `main.js`, `seo.js` ×2.
   **Create that forwarder at the registrar or mail to it bounces.**
-- `226 378 5926` / `tel:+12263785926` — `index.html` ×2
+- `226 378 5926` / `tel:+12263785926` — `index.html` ×2, `privacy.html` ×2,
+  `404.html`
 - `CNAME` is `forestcity.marketing`
 
 ### Also outstanding
 
-- **Privacy policy.** The quote form collects names, emails and phone
-  numbers, so you need one, linked from the footer and next to the consent
-  checkbox. Not written.
-- **`OFL.txt` for Departure Mono.** The font is under the SIL Open Font
-  Licence, which requires the licence to travel with it. Download it from
-  departuremono.com and drop it in `assets/fonts/`. Inherited from the
-  previous site and still not done.
 - **No testimonials / client work section.** The source site had one and it
   was parked because the cards were placeholders; it is not in this page at
   all. When there are real clients, that is the section to add — get their
   words and their written OK to use their name first.
-- A favicon beyond the inline SVG, and analytics if you want it.
+- A favicon beyond the inline SVG, and analytics if you want it. Note that
+  `privacy.html` currently says there is no analytics, in those words.
 - A page per service, if you ever want to rank for "lawn signs London
   Ontario" rather than just your own name.
+- **A mailing address**, before you ever send bulk marketing email. CASL
+  wants one in a commercial electronic message; `privacy.html` gives an email
+  and a phone number, which is enough for a site that only answers enquiries.
+- `londonmarketingsolutions.ca` is registered and has no DNS records at all.
+  Decide whether it redirects here or sits idle; an unresolving domain on a
+  business card is worse than no second domain.
+
+### Done since first deploy
+
+- **Privacy policy** — `privacy.html`, linked from the footer, the contact
+  column and the consent checkbox. PIPEDA/CASL, written to what the site
+  actually does rather than from a template: no cookies, no analytics, the
+  GitHub Pages logs, the Google Fonts request, the SEO checker's third-party
+  reader, and the fact that the quote form sends nothing by itself.
+- **`assets/fonts/OFL.txt`** — the licence Departure Mono ships with,
+  verbatim from the font's own distribution.
+- **`og:image`** — `assets/img/og.jpg`, built by `assets/img/src/make-og.sh`.
+- **`robots.txt` and `sitemap.xml`** — the checker on this very page reads
+  both on other people's sites; it was a bad look not to have them.
+- **`404.html`**.
 
 ---
 
@@ -442,6 +483,26 @@ number look bigger. That's a defensible thing to do to an arbitrary index. What
 isn't defensible is pairing a deflated score with a promise about traffic — so
 if the copy ever drifts from "a lift on the score" toward "X% more customers",
 turn `CURVE` back to 1 first.
+
+### Three findings, then a gate
+
+`SHOWN` in `render()` is 3. The list is sorted worst-first, so the three on
+display are the three worth the most money to fix, and everything past them
+sits behind one tile — *"and 8 more issues…"* — that links to `#quote`.
+
+**The count is the true one.** "And 8 more" that turns out to be 8 is worth
+something; "and 8 more" that turns out to be 2 is the reason nobody trusts
+free SEO tools. The number comes straight off the same array the visible rows
+come off.
+
+Three is also what keeps the grid honest. `.seo__list` is two columns, so
+3 + the gate is a clean 2×2, and 2 + the gate is three tiles where the
+existing `.seo__row:last-child:nth-child(odd)` rule spans the gate across the
+bottom. Change `SHOWN` to an even number and you get a stray empty tile back.
+
+The gate is the only row that is a link, so the padding lives on the `<a>`
+rather than the `<li>` and the whole tile is the hit area — a 13px uppercase
+heading is not something anyone should have to aim at.
 
 ### The proxy, which you still need to replace
 

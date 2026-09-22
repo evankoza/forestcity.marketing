@@ -541,12 +541,31 @@
       return b.weight - a.weight;
     });
 
-    elList.innerHTML = '';
+    // problems only. What passed is already carried by the count below,
+    // and a wall of green is not what anyone came here to read.
+    var problems = [];
     for (var j = 0; j < checks.length; j++) {
-      var c = checks[j];
-      // problems only. What passed is already carried by the count below,
-      // and a wall of green is not what anyone came here to read.
-      if (c.state === 'pass') continue;
+      if (checks[j].state !== 'pass') problems.push(checks[j]);
+    }
+
+    /* Three, and then a gate.
+       The sort above is worst-first, so the three on show are the three
+       worth the most - somebody who reads no further still leaves with
+       the findings that matter. The rest are real and the count is the
+       true one; "and 4 more" that turns out to be 4 is worth something,
+       "and 4 more" that turns out to be 0 is the reason nobody trusts
+       these tools.
+
+       Three is also what keeps the grid honest: the list is two columns,
+       so 3 + the gate is a clean 2x2 and 2 + the gate lets the existing
+       last-child:nth-child(odd) rule span the gate across. Change SHOWN
+       and you get a stray empty tile back. */
+    var SHOWN = 3;
+
+    elList.innerHTML = '';
+    var upTo = Math.min(SHOWN, problems.length);
+    for (var k = 0; k < upTo; k++) {
+      var c = problems[k];
       var li = document.createElement('li');
       li.className = 'seo__row';
       li.setAttribute('data-state', c.state);
@@ -557,6 +576,23 @@
       li.appendChild(h);
       li.appendChild(p);
       elList.appendChild(li);
+    }
+
+    var held = problems.length - upTo;
+    if (held > 0) {
+      var lock = document.createElement('li');
+      lock.className = 'seo__row seo__row--held';
+      var a = document.createElement('a');
+      a.href = '#quote';
+      var lh = document.createElement('h4');
+      lh.textContent = 'and ' + held + ' more issue' + (held === 1 ? '' : 's') + '…';
+      var lp = document.createElement('p');
+      lp.textContent = 'Ask for a quote and we’ll write the rest of them out for you, ' +
+        'with what each one is costing you. No charge, no obligation.';
+      a.appendChild(lh);
+      a.appendChild(lp);
+      lock.appendChild(a);
+      elList.appendChild(lock);
     }
 
     elList.hidden = !elList.children.length;

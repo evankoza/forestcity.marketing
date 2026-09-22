@@ -2,3 +2,9 @@
 # GitHub Pages reads this file literally — a CRLF here can break the custom
 # domain binding, so pin it to LF regardless of the checkout platform.
 CNAME text eol=lf
+
+# Shell scripts must stay LF. make-og.sh has a shebang, and a CRLF after
+# `#!/usr/bin/env bash` makes the loader look for an interpreter called
+# "bash\r" — which fails with a message that names neither the file nor
+# the line endings.
+*.sh text eol=lf

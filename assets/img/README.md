@@ -217,3 +217,34 @@ be rebuilt:
 - `branch-original.png` — the 1672x941 hero photo the three JPEGs come from
 - `left look.png`, `right look.png` — the supplied jay photos
 - `prep-bird.py` — builds `jay-left.png` / `jay-right.png` from those two
+- `make-og.sh` — builds `og.jpg`, the link preview
+- `mark2png.js`, `veil.js` — the two layers `make-og.sh` generates
+
+## og.jpg — the link preview
+
+1200x630, and built by a script rather than exported from a design tool,
+because three of its four layers already exist in this repo and would go
+stale the moment the site changed:
+
+```bash
+bash assets/img/src/make-og.sh
+```
+
+- **the photograph** is `branch-1672.jpg`, the hero's own, scaled to 1200 and
+  cropped 45px off the top — the branch and the bird both live in the lower
+  two thirds, so the sky is what goes.
+- **the veil** is `veil.js`, the same grade as `.hero__veil` plus a left-hand
+  falloff the hero does not need: on the og image the type sits over bark
+  rather than over a flat band, and bark eats 80px letterforms.
+- **the brand mark** is `mark2png.js`, which reads the `<rect>`s straight out
+  of `index.html`'s own inline SVG and paints them into a 26x27 PNG. Change
+  the mark in the page and the og image follows. ffmpeg scales it 11x with
+  `flags=neighbor`; any other scaler turns 26 cells into mush.
+- **the wordmark** is Departure Mono, drawn by ffmpeg's `drawtext`. The .otf
+  is not in this repo — the site self-hosts woff/woff2 only — so the script
+  fetches it. Same font, same licence (`assets/fonts/OFL.txt`).
+
+Needs `node` (stdlib only, no `npm install`) and an ffmpeg built with
+`--enable-libfreetype`. Output is JPEG at `-q:v 3`: the same frame is 715KB
+as a PNG and 105KB as a JPEG, and it is a photograph — there is nothing for
+PNG to do here but be large.
