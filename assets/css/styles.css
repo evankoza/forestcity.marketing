@@ -1,0 +1,1251 @@
+/* ==============================================================
+   Forest City Marketing - London, Ontario
+   Palette + type tokens live here. Rebrand = edit this block.
+   ============================================================== */
+
+/* Departure Mono - departuremono.com, SIL Open Font License.
+   Self-hosted; see assets/fonts/. Ships one weight only.
+   It is the PIXEL voice now, not the display voice: the wordmark, the
+   buttons and the numeric panels. Headings are a bold grotesque. */
+@font-face{
+  font-family:'Departure Mono';
+  src:url('../fonts/DepartureMono-Regular.woff2') format('woff2'),
+      url('../fonts/DepartureMono-Regular.woff') format('woff');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root{
+  /* ── surfaces ───────────────────────────────────────────────
+     Dark, and green-black rather than neutral black: a true #000
+     page under a forest photograph reads as a hole punched in the
+     picture. Every one of these has a green cast of a few points,
+     which is what makes the hero look like it belongs to the page
+     underneath it. */
+  --bg:    #080B09;     /* the page */
+  --bg-2:  #0E120F;     /* tinted sections */
+  --bg-3:  #141915;     /* cards, panels, form fields */
+  --panel: #11291F;     /* the one green band - #buyout */
+
+  --line:   #242D26;    /* decorative rules and card edges */
+  --line-2: #5E7063;    /* form control edges - these need 3:1 */
+
+  /* ── text ───────────────────────────────────────────────────
+     Measured on --bg: 18.2 / 11.7 / 6.8:1. All three clear AA on
+     every surface above, --panel included (14.2 / 9.1 / 5.3). */
+  --ink:      #F3F6F2;
+  --ink-2:    #BFCAC1;
+  --ink-3:    #8E9A90;
+
+  /* ── brand ──────────────────────────────────────────────────
+     The canopy green had to invert with the theme: #1B4332 carried
+     the old white page at 11:1 and is now barely separable from the
+     background. This is the same hue lifted until it reads ON dark
+     - 8.8:1, and bright enough to be the accent for links, kickers
+     and the pixel buttons' shadow. */
+  --forest:        #5CBF8D;
+  --forest-bright: #7ED6A6;   /* focus rings, hover */
+  --forest-soft:   #D8EDE1;   /* a pale tint, for the light button's hover */
+  --forest-line:   #C3DCCB;   /* PALE ink: artwork and on-photo text only */
+
+  /* The jay. The only blue on the page - its four inks in the hero
+     and the brand mark - and that is the point: it is what makes the
+     bird lift off a green hero instead of sinking into it. */
+  /* The brand mark is two blocks of flat colour, so its pair needs real
+     separation to read at 26px. On the old white page that was a mid blue
+     against a deep one; on black the deep one vanishes, so both moved up and
+     apart: --jay-mid is the light block, --jay the dark. */
+  --jay:      #5A8FC7;   /* mark: the dark block */
+  --jay-mid:  #C2D9F0;   /* mark: the light block */
+  --jay-pale: #BBD3EE;   /* the hero headline's italic accent */
+
+
+  /* pass / needs work / broken, for the SEO check. Lifted with
+     everything else - 8.9:1 and 6.8:1 on --bg. */
+  --warn:     #E0A33A;
+  --bad:      #F0705F;
+
+  --font-display: 'Bricolage Grotesque', 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-pixel:   'Departure Mono', ui-monospace, 'JetBrains Mono', monospace;
+
+  --nav-h:      72px;
+  /* The services rail's height. It is a token because the hero subtracts
+     it: the rail has to land inside the first screen, so the hero is
+     exactly the viewport less the nav and this. Change one, both follow. */
+  --rail-h:     60px;
+
+  --wrap: 1240px;
+  --pad:  clamp(20px, 5vw, 56px);
+  --r:    14px;
+
+  /* the footer's pixel field. Dim, not pale - --forest-line dots on a
+     near-black ground read as static. */
+  --dot: radial-gradient(circle at 1px 1px, #22402F 1px, transparent 1.4px);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img,svg,canvas{ display:block; max-width:100%; }
+a{ color:var(--forest); text-decoration-thickness:1px; text-underline-offset:3px; }
+h1,h2,h3,h4{ margin:0; line-height:1.1; letter-spacing:-0.01em; }
+p{ margin:0 0 1em; }
+p:last-child{ margin-bottom:0; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.wrap--narrow{ max-width:820px; }
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:100;
+  background:var(--ink); color:var(--bg); padding:12px 18px;
+}
+.skip:focus{ left:8px; top:8px; }
+
+:focus-visible{ outline:2px solid var(--forest-bright); outline-offset:3px; border-radius:4px; }
+
+/* -- shared bits ------------------------------------------- */
+
+.kicker{
+  font-family:var(--font-mono);
+  font-size:12px; font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--forest); margin:0 0 18px;
+}
+.kicker--light{ color:#86C9A4; }
+
+.section{ padding:clamp(72px,10vw,132px) 0; position:relative; }
+.section--tint{ background:var(--bg-2); border-block:1px solid var(--line); }
+/* the one green band on the page; --forest is an accent now, far too
+   bright to floor a whole section */
+.section--ink{ background:var(--panel); color:var(--ink); }
+
+.section__head{ max-width:720px; margin-bottom:clamp(40px,5vw,64px); }
+.section__title{
+  font-family:var(--font-display);
+  font-size:clamp(30px,3.7vw,50px);
+  font-weight:800; line-height:1.0; letter-spacing:-0.032em;
+  margin-bottom:20px;
+}
+.section__title--light{ color:var(--ink); }
+.section__lead{ font-size:clamp(17px,1.4vw,19px); color:var(--ink-2); max-width:62ch; }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; padding:15px 26px;
+  font-family:var(--font-body); font-size:16px; font-weight:600;
+  border-radius:10px; border:1.5px solid transparent;
+  text-decoration:none; cursor:pointer;
+  transition:transform .12s ease, background .18s ease, color .18s ease, border-color .18s ease;
+}
+.btn:active{ transform:translateY(1px); }
+/* On a dark page the old dark-face button disappeared into it, so the
+   solid button is now the green itself with dark text on top - 8.4:1. */
+.btn--solid{ background:var(--forest); color:#07120C; }
+.btn--solid:hover{ background:var(--forest-bright); }
+.btn--light{ background:var(--ink); color:#07120C; }
+.btn--light:hover{ background:var(--forest-soft); }
+.btn--sm{ padding:11px 18px; font-size:15px; }
+.btn--block{ width:100%; }
+
+/* -- pixel buttons (hero) ----------------------------------
+   A 6px step for the frame and the shadow offset. It is no longer
+   tied to the dither - the bird runs at a 4px cell (CELL in
+   bird.js) and these stayed at 6, because a 4px shadow makes the
+   pair read too light against a display face this size. They are
+   the page's pixel motif rather than a measurement off the art.
+   Corners are hard square - a radius on a pixel page is the one
+   thing that reads as stock.
+
+   The label is set LOWERCASE + small-caps, the same pair the display
+   headings use: the font has real smcp in GSUB, and feeding it
+   lowercase is what keeps its small capitals from sitting next to
+   full-height ones. */
+.btn--pixel{
+  position:relative; isolation:isolate;
+  /* padding and size are set so both labels fit one line inside the
+     560px hero copy column - small caps track wider than they set */
+  padding:16px 22px;
+  font-family:var(--font-pixel); font-weight:400; font-size:18px;
+  text-transform:lowercase; font-variant-caps:small-caps;
+  letter-spacing:.04em;
+  background:var(--ink); color:var(--bg);
+  border:0; border-radius:0;
+  /* one cell of hard offset, no blur, in the artwork's light ink */
+  box-shadow:6px 6px 0 var(--forest);
+  transition:transform .09s steps(2,end), box-shadow .09s steps(2,end),
+             background .15s ease, color .15s ease;
+}
+.btn--pixel:hover{
+  background:var(--forest-bright);
+  transform:translate(-3px,-3px);
+  box-shadow:9px 9px 0 var(--forest);
+}
+/* pressed: the face drops flush into its own shadow */
+.btn--pixel:active,
+.btn--pixel:hover:active{
+  transform:translate(6px,6px);
+  box-shadow:0 0 0 var(--forest);
+}
+.btn--pixel:focus-visible{ outline-offset:6px; border-radius:0; }
+
+/* the outline pair: same shell, a solid frame and a white face */
+.btn--pixel-ghost{ color:var(--ink); }
+.btn--pixel-ghost::before{
+  content:""; position:absolute; inset:4px; z-index:-1; background:var(--bg);
+}
+.btn--pixel-ghost:hover{ background:var(--forest-bright); color:var(--forest-bright); }
+
+@media (prefers-reduced-motion:reduce){
+  .btn--pixel,.btn--pixel:hover,.btn--pixel:active{ transform:none; }
+}
+
+/* -- nav --------------------------------------------------- */
+
+/* Two states, and they are genuinely two different objects.
+
+   At the top of the page the nav is a full-bleed bar: the background has to
+   sit on .nav, because .nav__inner is the .wrap and stops at 1240px — paint
+   it there instead and the bar ends in two lit gutters on a wide screen.
+
+   Once it sticks, .nav goes transparent and hands the paint to .nav__inner,
+   which becomes a bordered island floating clear of both edges. The blur
+   moves with it for the same reason: a backdrop-filter on a transparent
+   full-width .nav still frosts the whole strip, island or not. */
+.nav{
+  position:sticky; top:0; z-index:50;
+  padding-top:0;
+  background:rgba(8,11,9,.82);
+  backdrop-filter:saturate(150%) blur(12px);
+  border-bottom:1px solid transparent;
+  transition:padding .26s cubic-bezier(.2,.7,.3,1), background .26s ease,
+             border-color .2s ease, box-shadow .2s ease;
+}
+.nav.is-stuck{
+  padding-top:12px;
+  background:transparent; backdrop-filter:none;
+  border-bottom-color:transparent; box-shadow:none;
+}
+.nav__inner{
+  display:flex; align-items:center; gap:28px; height:var(--nav-h);
+  border:1px solid transparent; border-radius:0;
+  transition:max-width .26s cubic-bezier(.2,.7,.3,1),
+             height .26s ease, padding .26s ease,
+             background .26s ease, border-color .26s ease,
+             border-radius .26s ease, box-shadow .26s ease;
+}
+/* The island is 64px around controls that are 40, which leaves 12 above and
+   below against 16 left and right — close enough to read as even, and the
+   only way to get a true 16 all round would be an 72px island, which is the
+   height of the bar it is supposed to have shrunk out of.
+
+   The controls had to come down to 40 for that: at the 48 they inherit from
+   .btn--sm the margin was 8 vertical against 16 horizontal, which is what
+   made the island look squeezed top and bottom. */
+.nav.is-stuck .nav__inner{
+  max-width:1128px; height:64px;
+  padding-inline:16px;
+  background:rgba(14,18,15,.94);
+  backdrop-filter:saturate(150%) blur(12px);
+  border-color:var(--line); border-radius:16px;
+  box-shadow:0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.brand{
+  display:inline-flex; align-items:center; gap:10px;
+  color:var(--forest); text-decoration:none; flex:none;
+}
+/* 26x27 cells at 1 css px each - the box has to match the viewBox, and the
+   viewBox is 26x27 because that is what the mark was redrawn at. It was
+   boxed at 20x29 for a while, left over from the 20-cell version: with
+   preserveAspectRatio defaulting to meet, 26x27 art fitted into 20x29
+   scales by 0.769 and centres, so the bird came out 20x20.8 with 8px of
+   dead space under it - a quarter smaller than intended, and every cell
+   edge on a fractional pixel, which is what crispEdges cannot fix and
+   what made the mark read soft next to an 800-weight wordmark.
+   Whole multiples only: 26x27 or 52x54, nothing between. */
+.brand__mark{ width:26px; height:27px; flex:none; }
+/* The display face, at the weight the headings use. It was Departure Mono,
+   which could not be this: the pixel face ships ONE weight, so asking it for
+   bold gets a synthesised smear — and at twenty-one characters the full name
+   in a monospace is 290px of nav row, which the link list cannot spare.
+   A grotesque at 800 sets the same words in about 200. */
+/* 800 is the ceiling - the variable face is loaded at wght 400..800, so
+   asking for 900 gets the same synthesised smear Departure Mono did. The
+   weight that is left comes off the optical-size axis instead: pinned at
+   14 rather than tracking the 24px size, the letterforms are the ones
+   the family draws for small text - thicker stems, shorter extenders -
+   which is the sturdier of the two at this size. wght has to be repeated
+   inside font-variation-settings or it overrides the declaration above. */
+.brand__word{
+  font-family:var(--font-display); font-weight:800;
+  font-variation-settings:'opsz' 14, 'wght' 800;
+  font-size:24px; color:var(--ink);
+  letter-spacing:-0.022em; white-space:nowrap;
+}
+
+/* The segmented group. The links live inside a single inset panel rather
+   than floating on the bar, which is what lets the current section be a
+   filled chip instead of an underline - an underline under a link that is
+   already inside a panel reads as two competing markers. */
+/* 3px, not 4. The chips are 32 and the border is 1, so 3 is what lands the
+   group on the same 40 as the button beside it - at 4 it stood 2px taller
+   than the CTA, which is the kind of mismatch you see without being able to
+   name it. */
+.nav__links{
+  display:flex; gap:2px; margin-left:auto;
+  padding:3px;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line); border-radius:11px;
+}
+/* line-height is pinned rather than inherited: body runs 1.6, which on a
+   15px label is a 24px line box and makes every control in this row 8px
+   taller than it needs to be. 1.2 is what brings the group and the button
+   to a matched 40. */
+.nav__links a{
+  color:var(--ink-2); text-decoration:none; font-size:15px; font-weight:500;
+  line-height:1.2; padding:7px 14px; border-radius:8px; white-space:nowrap;
+  transition:background .16s ease, color .16s ease;
+}
+.nav__links a:hover{ background:rgba(92,191,141,.13); color:var(--ink); }
+/* 8.4:1. The chip is the same green as the solid button, so the pair at the
+   right-hand end of the row reads as one system rather than two greens. */
+.nav__links a.is-active{ background:var(--forest); color:#07120C; font-weight:600; }
+
+/* Overrides .btn--sm's 11px, and must stay after it in the file - the two
+   selectors weigh the same, so source order is what decides. */
+.nav__cta{
+  padding:10px 18px; line-height:1.2;
+  white-space:nowrap;
+  box-shadow:0 0 0 1px rgba(92,191,141,.35), 0 6px 18px rgba(92,191,141,.22);
+}
+.nav__cta:hover{
+  box-shadow:0 0 0 1px rgba(126,214,166,.5), 0 8px 24px rgba(92,191,141,.34);
+}
+
+.nav__toggle{
+  display:none; margin-left:auto;
+  width:44px; height:44px; padding:11px 9px;
+  background:none; border:1px solid var(--line-2); border-radius:9px; cursor:pointer;
+}
+.nav__toggle span{ display:block; height:2px; background:var(--ink); border-radius:2px; }
+.nav__toggle span + span{ margin-top:5px; }
+
+.nav__mobile{
+  display:none; flex-direction:column; gap:4px;
+  padding:12px var(--pad) 22px; border-top:1px solid var(--line);
+  background:var(--bg-2);
+}
+/* :not(.btn) matters. `.nav__mobile a` is (0,1,1) and `.btn--solid` is
+   (0,1,0), so without it this rule wins on the "Request a quote" button at
+   the foot of the menu and paints its label --ink on an --ink background —
+   an invisible button, measured at 1:1. */
+.nav__mobile a:not(.btn){ color:var(--ink); text-decoration:none; padding:12px 0; font-weight:500; }
+.nav__mobile .btn{ margin-top:10px; }
+
+/* -- hero -------------------------------------------------- */
+/* Three layers, bottom to top:
+     .hero__photo  the branch, a real photograph, full bleed
+     .hero__veil   the grade that makes white text survive on top of it
+     #bird         the dithered jay, perched
+   The copy sits in the RIGHT column; the bird perches on the left limb.
+   Nothing but the copy takes pointer events. */
+
+.hero{
+  position:relative; overflow:hidden;
+  display:flex; align-items:center;
+  /* The viewport, less the nav AND the rail below — so the rail is in
+     frame on first load rather than one scroll down. svh rather than vh so
+     a mobile URL bar does not push it off.
+
+     The extra 1px is the nav's bottom border, which sits OUTSIDE --nav-h:
+     that token sizes .nav__inner, and the border is on .nav around it. Drop
+     it and the rail ends exactly one pixel below the fold, which is the
+     most annoying possible amount. */
+  min-height:calc(100vh - var(--nav-h) - 1px - var(--rail-h));
+  min-height:calc(100svh - var(--nav-h) - 1px - var(--rail-h));
+  background:#0B1711;                       /* shows while the photo loads */
+}
+
+.hero__art{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+
+/* object-position is read back by bird.js to work out where the perch point
+   on the branch has landed after the cover crop. Change it here and the bird
+   follows; there is no second copy of this number in the JS. */
+.hero__photo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; object-position:32% 52%;
+}
+
+/* The grade: ONE ramp, heavy where the copy sits and light over the bird.
+   270deg puts 0% at the RIGHT edge, so the stops read right-to-left.
+
+   Two numbers here were measured rather than chosen.
+
+   The heavy end is .74. The worst case on this page is the smallest hero
+   text sitting directly on a blown sky gap in the canopy — the photo's
+   brightest pixel is (244,246,250), which is effectively white. Through the
+   composite, .74 puts every piece of hero text at 4.97:1 or better, the
+   weakest being the jay-pale accent in the headline. It started at .90,
+   which passed comfortably and also erased the photograph — at that weight
+   the hero was a green rectangle and the branch had gone. So .74 is the
+   lightest grade the text will tolerate, not the safest one available.
+
+   The ramp holds full strength to 54%. At a 1240px wrap the copy column
+   starts around 51% of the viewport in from the right at every width from
+   1280 up, so 54% keeps the whole column covered with a little to spare,
+   and everything past it belongs to the bird. */
+.hero__veil{
+  position:absolute; inset:0;
+  background:linear-gradient(270deg,
+    rgba(11,31,21,.78)  0%,
+    rgba(11,31,21,.74) 46%,
+    rgba(11,31,21,.74) 54%,
+    rgba(11,31,21,.54) 64%,
+    rgba(11,31,21,.30) 76%,
+    rgba(11,31,21,.20) 100%);
+}
+
+/* The bird canvas covers the whole hero and is drawn into at the perch
+   point, rather than being a small positioned element - that way the bob
+   can move it in whole dither cells without moving the element itself. */
+.hero__bird{
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:1; pointer-events:none;
+}
+
+.hero__inner{
+  position:relative; z-index:2; width:100%;
+  padding-block:clamp(40px,7vh,88px);
+  display:grid;
+  /* the empty left column IS the artwork: it is what keeps the copy off
+     the bird. Below 900px it collapses and the copy runs full width. */
+  /* The copy column is capped BOTH ways: 620px so the headline fits (see
+     .hero__title), and 56% so the art column keeps enough room for the
+     bird. A flat cap looks fine at 1440 and collides just above the
+     900px breakpoint — at 950 it leaves the art column 197px, and the
+     bird, which is sized off the photo rather than the viewport, is 145px
+     wide and ends up ~40px underneath the first characters of each line.
+     56% keeps them apart from 901px all the way up. */
+  grid-template-columns:minmax(0,1fr) minmax(0,min(640px,56%));
+  gap:clamp(24px,4vw,64px);
+}
+.hero__copy{ grid-column:2; color:#fff; }
+
+.hero .kicker{ color:var(--forest-line); }
+
+/* The hook, and the only place on the page set this large.
+
+   It used to be Departure Mono, which is a monospace advancing 0.636em per
+   character — so the headline's width was its character count and the size
+   had to be solved against the column. The display face is proportional
+   now, that constraint is gone, and the type can be as big as it looks
+   right rather than as big as it fits.
+
+   Set at 800 and tracked in hard. A grotesque this heavy sets with a lot of
+   air between the words by default, which at this size reads as a poster
+   rather than a masthead; -0.035em and a leading under 1 close it back up
+   into a block.
+
+   The cap is 72px, and that IS measured — a heavy grotesque is much wider
+   than the serif it replaced. "Your brand's image," needs 626px at 76px
+   against a 620px column, which is six pixels over and cost a whole extra
+   line. At 72px into a 640px column it needs 593px, so there is about 47px
+   of slack; rewrite the headline and re-measure rather than assuming. */
+.hero__title{
+  font-family:var(--font-display);
+  font-size:clamp(38px,5vw,72px);
+  font-weight:800; line-height:0.96; letter-spacing:-0.035em;
+  margin-bottom:28px;
+  color:#fff;
+  text-wrap:balance;
+}
+/* Colour, not italic. The face has an italic, but a bold grotesque italic
+   is a slant rather than a separate voice — it reads as emphasis in the
+   middle of a sentence instead of as part of the lockup. The jay's blue
+   ties the accent to the bird. */
+.hero__title-accent{ color:var(--jay-pale); }
+
+.hero__sub{
+  font-size:clamp(17px,1.5vw,20px);
+  color:#E6EFE8;                      /* 6.50:1 worst case; see .hero__veil */
+  max-width:52ch;
+}
+.hero__sub--muted{
+  font-size:16px; color:#CEDBD2;
+  border-left:2px solid var(--forest-line); padding-left:16px;
+}
+.hero__sub--muted strong{ color:#fff; font-weight:600; }
+
+.hero__cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+
+/* A line of credentials along the bottom of the hero, on the copy side. */
+.hero__marks{
+  display:flex; flex-wrap:wrap; gap:8px 22px;
+  margin-top:30px; padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.18);
+  font-family:var(--font-mono); font-size:12px;
+  letter-spacing:.1em; text-transform:uppercase; color:#C6D5CA;
+}
+
+/* The hero ends on a HARD edge against the services rail — no fade.
+   There was a gradient here softening the last 48px into the page, and
+   before that 120px. Against a rail with its own border it read as a
+   smudge on the bottom of the photograph rather than as a join; the rail's
+   top border is the edge now, and it is a cleaner one than any fade. */
+
+
+/* -- service cards ----------------------------------------- */
+
+.cards{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+.card{
+  position:relative; padding:32px 28px 30px;
+  background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r);
+  transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{
+  border-color:var(--forest); transform:translateY(-3px);
+  box-shadow:0 14px 40px -22px rgba(92,191,141,.35);
+}
+.card__num{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.14em;
+  color:var(--forest); display:block; margin-bottom:22px;
+}
+.card h3{ font-family:var(--font-display); font-size:23px; font-weight:700; letter-spacing:-0.022em; margin-bottom:12px; }
+.card p{ color:var(--ink-2); font-size:15.5px; }
+
+.ticks{ list-style:none; margin:20px 0 0; padding:0; }
+.ticks li{
+  position:relative; padding-left:24px; margin-bottom:9px;
+  font-size:14.5px; color:var(--ink-2);
+}
+.ticks li::before{
+  content:""; position:absolute; left:0; top:.6em;
+  width:9px; height:9px; background:var(--forest);
+}
+.ticks--lg li{ font-size:16px; margin-bottom:14px; padding-left:28px; }
+
+/* -- the services rail ------------------------------------- */
+/* A marquee in the seam between the hero and the canopy. It exists as much
+   to solve that join as to say anything: a solid rail with a hard edge top
+   and bottom reads as a deliberate divider, where two photographs dissolving
+   into a shared pool of black just read as mud. */
+
+.ticker{
+  position:relative; z-index:2;
+  height:var(--rail-h);
+  display:flex; align-items:center;
+  background:var(--bg-2);
+  border-block:1px solid var(--line);
+  overflow:hidden;
+  /* the ends feather instead of being guillotined by the container edge */
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+/* Two identical rows side by side, translated by exactly half the track —
+   so the moment row one has left, row two is sitting precisely where it
+   started and the loop has no seam. Duplicating the row is what buys that;
+   a single row would have to jump back. */
+.ticker__track{
+  display:flex; width:max-content;
+  animation:ticker-scroll 42s linear infinite;
+}
+@keyframes ticker-scroll{ to{ transform:translateX(-50%); } }
+
+/* a moment to read it */
+.ticker:hover .ticker__track{ animation-play-state:paused; }
+
+.ticker__row{ display:flex; flex:none; }
+
+.ticker__item{
+  display:inline-flex; align-items:center;
+  padding-left:26px;
+  font-family:var(--font-pixel); font-weight:400; font-size:16px;
+  text-transform:lowercase; font-variant-caps:small-caps;
+  letter-spacing:.05em; white-space:nowrap;
+  color:var(--forest);
+}
+/* the separator is a pixel, not a bullet — it is the one motif the rail
+   borrows from the rest of the page */
+.ticker__item::after{
+  content:""; width:5px; height:5px; margin-left:26px;
+  background:var(--forest-line); flex:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .ticker__track{ animation:none; }
+}
+
+@media (max-width:600px){
+  :root{ --rail-h:52px; }
+  .ticker__item{ font-size:14px; padding-left:18px; }
+  .ticker__item::after{ margin-left:18px; }
+}
+
+/* -- the canopy ------------------------------------------- */
+/* #services sits on a photograph of the canopy rather than flat paper.
+   Same idea as the hero: photo, a graded veil over it, content above both. */
+
+.section--canopy{ position:relative; isolation:isolate; }
+.section--canopy > .wrap{ position:relative; z-index:1; }
+
+/* The artwork spans the WHOLE section, but the photo inside it is only ever
+   one viewport tall — see .section__stick.
+
+   That indirection is the point. Stretching the photo over the section with
+   object-fit:cover was the obvious thing and it does not work: the section
+   is ~1400px tall on a desktop and nearly 4000px on a phone once the cards
+   stack, so cover scales a 1537x1023 photo by 1.4x at best and by nearly
+   4x at worst. At the phone end that is not a canopy, it is a green smear.
+   An earlier version dodged it by shrinking the artwork to a band across
+   the top, which kept the photo sharp and left the rest of the section bare.
+
+   overflow:clip, with hidden as the fallback. Both clip the artwork to the
+   section; hidden also makes this a scroll container, which silently kills
+   the sticky inside it. Browsers without clip therefore fall back to the
+   old behaviour — artwork pinned at the top of the section — rather than to
+   a photo escaping over the rest of the page. */
+.section__art{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  overflow:hidden;
+  overflow:clip;
+}
+
+/* One viewport tall, and it sticks — so the canopy sits still while the
+   section scrolls past it, and the photo is never asked to be bigger than
+   the screen no matter how long the section grows. */
+.section__stick{
+  position:sticky; top:0; height:100vh; z-index:0;
+}
+.section__photo{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center;
+}
+
+/* The green filter, then a darkening over it. Topmost layer first.
+
+   Both alphas are solved, and they trade off against each other: what you
+   actually see of the photograph is (1 - dark) x (1 - green), so the green
+   tint is not free — at .42 it was throwing away nearly half of whatever
+   the darkening left, and between them only 16% of the canopy survived.
+   That is why the first version of this was "barely visible".
+
+   Worst case is the canopy's brightest pixel, which is literally
+   (255,255,255) — the sky between the leaves. Against that, .68 dark over
+   .30 green puts everything sitting on the photo at 6.4:1 or better and
+   lets 22% of it through.
+
+   The green is carrying most of the increase here (.18 -> .30) and the
+   darkening much less (.62 -> .68) — a stronger FILTER is more hue, not
+   just less light, or the canopy simply goes black.
+
+   22% was also roughly where the version people called "barely visible"
+   landed, and this does not read that way, because the problem then was
+   never really the alpha: it was a short band whose percentage-based edge
+   fades ate most of it. The geometry below fixed that, which is what buys
+   the room to grade this harder.
+
+   Getting there needed the TEXT to move too. On the body colours the kicker
+   bound at 4.57 and capped the photo at 21%; the section head now uses the
+   hero's on-photo set instead (below), which is the same principle the hero
+   already follows — type over photography needs more headroom than type on
+   a flat surface. */
+.section__veil{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(0deg, rgba(8,11,9,.68), rgba(8,11,9,.68)),
+    linear-gradient(0deg, rgba(31,82,58,.30), rgba(31,82,58,.30));
+}
+
+/* The two edges, so the band has no cut line where it meets the sections
+   above and below. These sit on .section__art, which spans the section, NOT
+   on the sticky layer — anchored to the sticky layer they would ride up and
+   down with it and fade the middle of the section instead of its ends. */
+/* Both edges fade, and the two ends are not symmetrical on purpose.
+
+   The hero ABOVE the rail cuts dead into it — no fade at all. This section
+   BELOW the rail emerges out of it over 48px. So the rail has a hard top
+   edge and a soft bottom one: the photograph above stops, and the canopy
+   below arrives. Fading both sides was the original mistake (270px of
+   near-black between two photographs); fading neither made the canopy
+   start with a jolt.
+
+   48px, not the 150 it began at. The bottom edge runs longer at 110px
+   because it meets an ordinary section with no rail to draw the line. */
+.section__art::before,
+.section__art::after{
+  content:""; position:absolute; left:0; right:0; z-index:1;
+}
+.section__art::before{
+  top:0; height:48px;
+  background:linear-gradient(180deg, var(--bg), rgba(8,11,9,0));
+}
+.section__art::after{
+  bottom:0; height:110px;
+  background:linear-gradient(0deg, var(--bg), rgba(8,11,9,0));
+}
+
+/* The head of the section sits ON the photograph, so it takes the hero's
+   lighter text set rather than the page's. */
+.section--canopy .section__head .section__title{ color:#fff; }
+.section--canopy .section__head .section__lead{ color:#E6EFE8; }
+.section--canopy .section__head .kicker{ color:var(--forest-line); }
+
+/* The lead card. Websites and hosting are the biggest ticket and the thing
+   every other service ends up hanging off, so card 01 spans two columns and
+   is the only card on a dark ground. The grid is 3 columns and the five
+   cards fill 2+1+1+1+1 = six cells exactly, so nothing is left orphaned on
+   a row of its own. Add a sixth service and this stops working — either
+   drop the span or go to four columns. */
+.card--lead{
+  grid-column:span 2;
+  background:var(--panel); border-color:#20503A;
+  color:var(--ink);
+  display:grid; grid-template-columns:1fr 1fr; gap:10px 34px;
+  align-content:start;
+}
+.card--lead:hover{ border-color:var(--forest-bright); }
+.card--lead .card__num{ color:var(--forest); grid-column:1 / -1; }
+.card--lead h3{ grid-column:1 / -1; font-size:29px; color:var(--ink); }
+.card--lead p{ color:#C7D9CC; font-size:16px; margin:0; }
+.card--lead .ticks{ margin-top:0; }
+.card--lead .ticks li{ color:#C7D9CC; }
+.card--lead .ticks li::before{ background:var(--forest); }
+.card--lead .card__flag{
+  grid-column:1 / -1;
+  font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--forest);
+  margin:6px 0 0; padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.14);
+}
+
+/* -- the bundle tiers -------------------------------------- */
+/* Bundling used to be a section of its own. It is a pricing note on the
+   services, so it now sits under them inside #services: same band, no
+   kicker number, and it reads as a consequence of the cards above rather
+   than a second pitch competing with them. */
+
+.tiers{
+  margin-top:clamp(40px,5vw,64px);
+  padding-top:clamp(36px,4vw,52px);
+  border-top:1px solid rgba(255,255,255,.14);
+}
+.tiers__head{ max-width:760px; }
+.tiers__title{
+  font-family:var(--font-display);
+  font-size:clamp(26px,3vw,38px);
+  font-weight:800; line-height:1.0; letter-spacing:-0.03em;
+  margin:0 0 16px; color:#fff;
+}
+/* this block sits on the canopy photograph, so it takes the hero's
+   on-photo text set rather than the page's — same rule as the section head */
+.tiers__lead{ font-size:17px; color:#E6EFE8; max-width:62ch; margin:0; }
+
+.tiers__foot{
+  margin:22px 0 0;
+  font-size:14.5px; color:#D6E2D9; max-width:70ch;   /* 5.12:1 */
+}
+
+/* -- switch list ------------------------------------------- */
+
+.switch-list{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--line); border:1px solid var(--line);
+  border-radius:var(--r); overflow:hidden;
+}
+.switch-item{ display:flex; gap:20px; padding:34px 30px; background:var(--bg-2); }
+.switch-item__n{
+  font-family:var(--font-mono); font-size:13px; color:var(--forest);
+  padding-top:3px; flex:none;
+}
+.switch-item h3{ font-family:var(--font-display); font-size:23px; font-weight:700; letter-spacing:-0.022em; margin-bottom:10px; }
+.switch-item p{ color:var(--ink-2); font-size:15.5px; margin:0; }
+
+/* -- buyout ------------------------------------------------ */
+
+.section--ink{ overflow:hidden; }
+.section--ink::before{
+  content:""; position:absolute; inset:0;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.16) 1px, transparent 1.4px);
+  background-size:9px 9px;
+  -webkit-mask-image:radial-gradient(120% 100% at 100% 0%, #000, transparent 68%);
+  mask-image:radial-gradient(120% 100% at 100% 0%, #000, transparent 68%);
+  pointer-events:none;
+}
+.buyout{
+  display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+  gap:clamp(32px,5vw,72px); align-items:center; position:relative;
+}
+.buyout__lead{ font-size:18px; color:#CBDCD1; max-width:54ch; }
+.buyout__note{ margin-top:28px; font-size:14px; color:#A7BFAF; max-width:52ch; }
+.buyout__note strong{ color:var(--ink); }
+
+.maths{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:var(--r); padding:30px 28px;
+  font-family:var(--font-mono); font-size:14.5px;
+}
+.maths__row{ display:flex; justify-content:space-between; gap:20px; padding:11px 0; color:#CBDCD1; }
+.maths__row--minus{ color:#9BBBA7; }
+.maths__val{ white-space:nowrap; }
+.maths__rule{ height:1px; background:rgba(255,255,255,.22); margin:8px 0; }
+.maths__row--total{ color:var(--ink); font-size:17px; font-weight:500; }
+.maths__caption{ margin:14px 2px 0; font-size:12.5px; color:#9EB6A6; font-family:var(--font-body); }
+
+/* -- the SEO check ----------------------------------------- */
+/* Same shell as the FAQ card and the hero buttons: square corners,
+   a 2px ink frame, one hard whole-cell shadow. It sits on plain
+   white, between the dark buyout block and the tinted quote block,
+   so the frame is doing all the separating on its own. */
+
+.seo__panel{
+  background:var(--bg-3);
+  border:2px solid var(--line-2);
+  box-shadow:6px 6px 0 var(--forest);
+  padding:clamp(22px,3vw,34px);
+}
+
+.seo__form{ display:flex; flex-wrap:wrap; gap:12px; align-items:stretch; }
+
+/* the input wears its own scheme prefix, so nobody has to type it */
+.seo__field{
+  /* min-width:0 — a flex item will not shrink below its content otherwise,
+     and a 320px basis on a 320px phone leaves nothing for the padding */
+  flex:1 1 320px; min-width:0; display:flex; align-items:center;
+  background:var(--bg-3); border:2px solid var(--line-2);
+  transition:border-color .16s ease, background .16s ease;
+}
+.seo__field:focus-within{ background:var(--bg-3); border-color:var(--forest); }
+.seo__field span{
+  font-family:var(--font-mono); font-size:14px; color:var(--ink-3);
+  padding:0 2px 0 14px; user-select:none; flex:none;
+}
+.seo__field input{
+  flex:1; min-width:0;
+  padding:14px 14px 14px 4px;
+  font-family:var(--font-mono); font-size:15.5px; color:var(--ink);
+  background:none; border:0; outline:none;
+}
+.seo__form .btn{ flex:0 0 auto; }
+
+.seo__status{ margin:14px 0 0; font-size:14.5px; min-height:1.2em; color:var(--ink-3); }
+.seo__status.is-err{ color:var(--bad); }
+
+/* The waiting ellipsis, driven from seo.js. Three characters are always
+   reserved, so the status line and the button hold their width while the
+   dots come and go - in the button that matters, because it is a
+   monospace and every dot would otherwise shove the label sideways. */
+.seo__dots{ display:inline-block; width:3ch; text-align:left; }
+
+.seo__small{ margin:16px 0 0; font-size:13.5px; color:var(--ink-3); max-width:64ch; }
+
+/* -- the result -------------------------------------------- */
+
+.seo__out{ margin-top:30px; padding-top:28px; border-top:2px solid var(--ink); }
+
+.seo__for{
+  font-family:var(--font-mono); font-size:13px; letter-spacing:.06em;
+  color:var(--forest); margin:0 0 22px; word-break:break-all;
+}
+
+.seo__result{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); margin-bottom:28px;
+}
+.seo__cell{ background:var(--bg); padding:26px clamp(18px,2.4vw,28px); }
+.seo__cell .kicker{ margin-bottom:10px; }
+
+.seo__num{
+  font-family:var(--font-pixel); font-weight:400;
+  font-size:clamp(54px,8vw,80px); line-height:1;
+  letter-spacing:-0.02em; color:var(--ink); margin:0;
+}
+.seo__num small{ font-size:.34em; color:var(--ink-3); margin-left:4px; letter-spacing:0; }
+.seo__num--up{ color:var(--forest); }
+
+/* twenty cells, one per five points - the artwork's own two inks */
+.seo__meter{ display:flex; gap:3px; margin:20px 0 14px; }
+/* the empty cells are a TRACK, not ink - pale mint here would read as a
+   full meter on a dark ground */
+.seo__meter i{ flex:1; height:20px; background:#26302A; }
+.seo__meter i.is-on{ background:var(--forest); }
+
+.seo__verdict{
+  font-family:var(--font-pixel); font-weight:400;
+  font-variant-caps:small-caps; letter-spacing:-0.015em;
+  font-size:19px; color:var(--ink); margin:0;
+}
+.seo__upnote{ margin:18px 0 0; font-size:13.5px; color:var(--ink-3); }
+
+/* -- the checklist ------------------------------------------ */
+
+.seo__list{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--line); border:1px solid var(--line);
+}
+/* display:grid outranks the UA rule for [hidden], and the list is hidden
+   outright when a site has nothing wrong with it */
+.seo__list[hidden]{ display:none; }
+.seo__row{ background:var(--bg); padding:20px 22px 20px 44px; position:relative; }
+/* An odd number of checks leaves the last grid cell empty, and the gap
+   colour shows through it as a stray grey tile. Let the last row span
+   instead. Self-correcting: on an even count this stops matching. */
+.seo__row:last-child:nth-child(odd){ grid-column:1 / -1; }
+/* one hard square per row, in the state's ink - no icon font, no glyph */
+.seo__row::before{
+  content:""; position:absolute; left:22px; top:23px;
+  width:11px; height:11px; background:var(--forest);
+}
+.seo__row[data-state=warn]::before{ background:var(--warn); }
+.seo__row[data-state=fail]::before{
+  background:none; box-shadow:inset 0 0 0 2px var(--bad);
+}
+/* a check we could not run - reads as absent, not as a fault */
+.seo__row[data-state=skip]::before{ background:var(--line); }
+.seo__row[data-state=skip] h4{ color:var(--ink-3); }
+.seo__row[data-state=skip] p{ color:var(--ink-3); }
+.seo__row h4{
+  font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); margin:0 0 7px;
+}
+.seo__row[data-state=warn] h4{ color:var(--warn); }
+.seo__row[data-state=fail] h4{ color:var(--bad); }
+.seo__row p{ margin:0; font-size:14.5px; color:var(--ink-2); }
+
+.seo__cta{ margin-top:28px; }
+
+@media (max-width:820px){
+  .seo__result,.seo__list{ grid-template-columns:1fr; }
+  .seo__form .btn{ flex:1 1 100%; }
+}
+
+/* -- quote form -------------------------------------------- */
+
+.quote-grid{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:clamp(32px,5vw,72px); align-items:start; }
+
+.contact-direct{ margin-top:40px; padding-top:28px; border-top:1px solid var(--line); }
+.contact-direct p{ margin:0 0 6px; font-size:17px; overflow-wrap:anywhere; }
+
+.qform{
+  background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r);
+  padding:clamp(24px,3vw,36px);
+}
+.qform__row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+.field{ display:block; margin-bottom:20px; border:0; padding:0; }
+.field > span,.field legend{
+  display:block; font-size:14px; font-weight:600; color:var(--ink);
+  margin-bottom:8px; padding:0;
+}
+.field em{ color:var(--forest); font-style:normal; }
+.field input[type=text],.field input[type=email],.field input[type=tel],.field textarea{
+  width:100%; padding:13px 14px;
+  font-family:inherit; font-size:16px; color:var(--ink);
+  background:var(--bg-3); border:1.5px solid var(--line-2); border-radius:9px;
+  transition:border-color .16s ease, background .16s ease;
+}
+.field textarea{ resize:vertical; min-height:110px; }
+.field input:focus,.field textarea:focus{ background:var(--bg); border-color:var(--forest); outline:none; }
+.field input[aria-invalid=true],.field textarea[aria-invalid=true]{ border-color:var(--bad); background:#2A1512; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{ position:relative; }
+.chip input{ position:absolute; opacity:0; width:0; height:0; }
+.chip span{
+  display:inline-block; padding:9px 15px;
+  font-size:14.5px; color:var(--ink-2);
+  background:var(--bg-3); border:1.5px solid var(--line-2); border-radius:999px;
+  cursor:pointer; transition:all .14s ease; user-select:none;
+}
+.chip span:hover{ border-color:var(--forest); }
+.chip input:checked + span{ background:var(--forest); border-color:var(--forest); color:#07120C; }
+.chip input:focus-visible + span{ outline:2px solid var(--forest-bright); outline-offset:2px; }
+
+.field--check{ display:flex; gap:11px; align-items:flex-start; }
+.field--check input{ margin-top:4px; width:17px; height:17px; accent-color:var(--forest); flex:none; }
+.field--check span{ margin:0; font-weight:400; font-size:14.5px; color:var(--ink-2); }
+
+.hp{ position:absolute; left:-9999px; }
+
+.qform__status{ margin:14px 0 0; font-size:14.5px; min-height:1.2em; }
+.qform__status.is-err{ color:var(--bad); }
+.qform__status.is-ok{ color:var(--forest); font-weight:500; }
+
+/* -- faq --------------------------------------------------- */
+
+/* the section's pixel field, edge to edge. .section is already
+   position:relative, so inset:0 fills exactly the section box. */
+#faq::before{
+  content:""; position:absolute; inset:0; z-index:0;
+  background-image:var(--dot);
+  background-size:8px 8px;
+  opacity:.9; pointer-events:none;
+  /* the band's fade, kept - spread over the whole section instead of
+     over 110px, so the field builds downward rather than sitting flat.
+     It bottoms out at 28% rather than at zero, so the top of the
+     section is still covered. */
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.28),#000 62%);
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.28),#000 62%);
+}
+#faq > .wrap{ position:relative; z-index:1; }
+
+/* the Q&A card: a lifted panel over the dot field, so the answers keep a
+   plain ground to read against rather than sitting on the texture.
+   Square corners and a whole-cell hard shadow, the same language as
+   the hero buttons. */
+.faq{
+  background:var(--bg-3);
+  border:2px solid var(--line-2);
+  /* the green, not the dot colour: the field behind is dim green dots and
+     a shadow in that tone would disappear into them */
+  box-shadow:6px 6px 0 var(--forest);
+  padding:4px clamp(20px,3.4vw,36px);
+}
+.faq details{ border-bottom:1px solid var(--line); }
+/* the card edge closes the list - a rule above it would double up */
+.faq details:last-child{ border-bottom:0; }
+.faq summary{
+  cursor:pointer; list-style:none; padding:24px 40px 24px 0; position:relative;
+  font-family:var(--font-display); font-size:22px; font-weight:700;
+  letter-spacing:-0.022em;
+}
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary::after{
+  content:""; position:absolute; right:6px; top:50%;
+  width:11px; height:11px; margin-top:-8px;
+  border-right:2px solid var(--forest); border-bottom:2px solid var(--forest);
+  transform:rotate(45deg); transition:transform .2s ease;
+}
+.faq details[open] summary::after{ transform:rotate(-135deg); margin-top:-3px; }
+.faq details p{ padding:0 0 26px; color:var(--ink-2); max-width:68ch; }
+
+/* -- footer ------------------------------------------------ */
+
+.foot{ background:var(--bg-2); border-top:1px solid var(--line); position:relative; }
+.foot__inner{
+  display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1.8fr); gap:48px;
+  padding-block:clamp(48px,6vw,76px);
+}
+.foot__brand p{ margin:16px 0 0; color:var(--ink-3); font-size:15px; max-width:34ch; }
+.foot__where{ font-family:var(--font-mono); font-size:13px; }
+.foot__links{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
+.foot__links h4{
+  font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); margin-bottom:14px;
+}
+.foot__links a{
+  display:block; color:var(--ink-3); text-decoration:none;
+  font-size:15px; padding:5px 0;
+  /* hello@forestcity.marketing is one 26-character token with no break
+     opportunity in it, and it is wider than a narrow phone column */
+  overflow-wrap:anywhere;
+}
+.foot__links a:hover{ color:var(--forest); }
+.foot__base{
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  padding-block:22px; border-top:1px solid var(--line);
+  font-size:13px; color:var(--ink-3);
+}
+.foot__base p{ margin:0; }
+.foot__mono{ font-family:var(--font-mono); color:var(--forest); }
+
+/* -- responsive -------------------------------------------- */
+
+@media (max-width:1080px){
+  .cards{ grid-template-columns:1fr; }
+  /* one column: the span and the lead card's inner two-up both have to go */
+  .card--lead{ grid-column:span 1; grid-template-columns:1fr; gap:10px; }
+  .card--lead .ticks{ margin-top:8px; }
+}
+
+/* The narrow end of the desktop nav — just above the 900px mobile
+   breakpoint — is where this row has always run out of width. It is the
+   full company name now rather than two words, which costs about 60px, but
+   the segmented group buys most of that back: the links sit tighter inside
+   a panel than they did spread across the bar at a 26px gap.
+
+   Four counts again: wordmark, the row gap, the chip padding and the link
+   size. Nothing here may wrap - every label in this row is two or three
+   words, and one wrapped label doubles the height of the nav.
+
+   21, not 17.5. The desktop wordmark is 24px, and dropping straight to
+   17.5 put a 6.5px lurch on this one breakpoint - visible as you drag the
+   window across it. The ladder is 24 / 21 / 18 now: even steps of three,
+   and every one of them measured rather than guessed. At 981px, the tight
+   end of this step's range, 21px leaves 42.5px of slack and the row does
+   not overflow until 24. */
+@media (max-width:1100px){
+  .brand__word{ font-size:21px; }
+  .nav__inner{ gap:18px; }
+  .nav__links a{ font-size:14px; padding:7px 11px; }
+  .nav.is-stuck .nav__inner{ padding-inline:12px; }
+}
+
+/* The last 80px before the hamburger takes over at 900. 901px is the
+   tightest point on the page - the row is at its widest relative to what it
+   has, because --pad is still 5vw (45px a side) while the content has not
+   shrunk any further.
+
+   Measured there, after layout settles, slack against wordmark size with
+   everything else held:
+
+       17px  33.6      20px    2.8
+       18px  23.3      21px   -7.5  (overflows)
+       19px  13.1
+
+   18 keeps the step down from 21 at three points and still holds 23px back
+   for the font fallback or rounding difference the original note warned
+   about. 19 would fit, but 13px is the kind of margin that survives this
+   browser and not the next one.
+
+   Measure this on a FRESH LOAD at the width you care about. .nav__inner
+   transitions max-width and padding over .26s, so walking the viewport down
+   through the breakpoints and probing as you go reads the row mid-flight:
+   doing that here returned 1.4px where a reload at the same width returns
+   23.3. Every number above is from a reload. The previous note measured a
+   layout that predates the segmented group, so its figure is not comparable
+   to these - but its warning was the right one. */
+@media (max-width:980px){
+  .brand__word{ font-size:18px; }
+  .nav__inner{ gap:14px; }
+  .nav__links a{ padding:7px 10px; }
+  .nav__cta{ padding:10px 15px; }
+}
+
+@media (max-width:760px){
+  /* the copy is its own block under the art band by now, so let it use the
+     full width rather than keeping the desktop column measure */
+  .hero__copy{ max-width:none; }
+}
+
+@media (max-width:900px){
+  .nav__links{ display:none; }
+  .nav__inner > .btn{ display:none; }
+  .nav__toggle{ display:block; }
+  .nav__mobile[data-open]{ display:flex; }
+  .switch-list{ grid-template-columns:1fr; }
+  /* minmax(0,1fr), not 1fr. `1fr` is minmax(AUTO,1fr), which will not let a
+     track go narrower than its widest un-shrinkable child — and these panels
+     contain price tags set `white-space:nowrap`. At 280px that dragged the
+     grid 82px past the viewport and gave the whole page a sideways scroll. */
+  .buyout,.quote-grid{ grid-template-columns:minmax(0,1fr); }
+  .foot__inner{ grid-template-columns:minmax(0,1fr); gap:36px; }
+}
+
+@media (max-width:600px){
+  body{ font-size:16px; }
+  .qform__row{ grid-template-columns:1fr; }
+  .foot__links{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .hero__cta .btn{ flex:1 1 100%; }
+  /* the display face is a monospace at 0.636em an advance - the full
+     label has to keep fitting one line inside a 375px viewport */
+  .btn--pixel{ font-size:18px; padding:15px 18px; }
+}
+
+/* -- Departure Mono corrections ----------------------------
+   It ships a single weight, so any bold is synthesised by the
+   browser, which smears a pixel face.
+
+   This used to cover the headings too, back when Departure Mono WAS
+   the display face. It no longer is - headings are a proportional
+   grotesque, which wants neither small caps nor a monospace's
+   tracking.
+
+   The wordmark has now left this list as well: it is set in the display
+   face at 800, and leaving it here would force that straight back to 400.
+   What remains is only the places the pixel face actually survives - the
+   hero buttons and the numeric panels. Adding a heading or the wordmark
+   back here would set it in small caps and look like a mistake. */
+.btn--pixel,.seo__num,.seo__verdict{
+  font-weight:400;
+}
+
+/* Bricolage Grotesque is a VARIABLE face carrying 200-800, so unlike the
+   pixel one it wants a real weight asked for rather than forced to 400 —
+   the whole point of picking it was the top of that range. Each heading
+   sets its own above; nothing is forced here.
+
+   Swapping it is one line: change --font-display and the @import in
+   index.html together. Anything with weight up to 800 drops straight in —
+   Archivo and Figtree are the cleaner, more neutral alternatives; Anton is
+   heavier still but ships one weight and only really works in caps. */
+
+/* Where the copy column and the artwork cannot both have room, the grid
+   collapses and the copy runs the full width ON TOP of the photo. The veil
+   has to change with it: a ramp from the right is no use when the text
+   reaches the left edge, so it becomes a flat wash instead.
+
+   WIDTH ONLY. This inherited a `(max-height:760px)` as well, which is right
+   for a hero that stacks its art UNDER the copy — a short window there
+   pushes the art off the bottom. This one splits left/right, so height
+   costs it nothing, and the height clause was collapsing perfectly good
+   two-column layouts on ordinary laptops: a 1366x768 screen has about
+   660px of viewport once the browser has taken its share.
+
+   The weight is the same .74 the ramp uses, and for the same reason — the
+   text and the worst-case pixel under it have not changed, only where they
+   sit. It runs a little heavier toward the foot of the hero because that is
+   where the copy is densest. */
+/* On a phone the hero stops being a composition and becomes two things
+   stacked: a band of artwork, then the copy underneath it.
+
+   This is not a preference. The perch is a fixed point in the photograph,
+   and on a tall narrow viewport object-fit:cover scales the photo by HEIGHT,
+   which means the photo is always exactly as tall as its box and the perch
+   always lands at 43.2% of it — object-position cannot move it, because
+   there is no vertical overflow left to shift. Overlaid on a full-bleed
+   phone hero that puts a 150px dithered bird straight through the middle of
+   the body copy, and no amount of veil rescues text with speckle behind it.
+
+   Giving the artwork its own box fixes it at the root: the band is ~46vh, so
+   43.2% of the band is ~160px down, which is where the bird goes — and the
+   copy now starts below the band rather than underneath the bird. The bird
+   shrinks to match, because BIRD_W is a share of the photo's displayed
+   width and the photo in a 46vh band is a much smaller photo. None of that
+   needs a second set of numbers in the JS; it reads the box it is given. */
+@media (max-width:900px){
+  .hero{ display:block; min-height:0; }
+  .hero__art{ position:relative; height:46vh; min-height:270px; max-height:420px; }
+  /* Shifted left-of-centre crop. The perch sits at 21.5% across the photo,
+     and a phone's cover crop is so tight that at the desktop's 32% the
+     bird's anchor lands about 50px in — with the tail reaching another 55px
+     left of that, off the edge of the screen. Pulling the crop to 18% walks
+     the whole bird back into frame. bird.js reads this value rather than
+     keeping its own, so the perch follows it without a second number. */
+  .hero__photo{ object-position:18% 52%; }
+  /* no text sits on the band now, so the grade drops to a brand tint */
+  .hero__veil{
+    background:linear-gradient(180deg,
+      rgba(11,31,21,.16) 0%, rgba(11,31,21,.24) 62%, rgba(11,20,16,.97) 100%);
+  }
+  /* the copy block carries on in the same dark green the band fades into,
+     so the join reads as one field rather than a photo with a caption */
+  .hero__inner{
+    grid-template-columns:1fr;
+    background:#0B1410;
+    padding-block:clamp(30px,5vh,46px) clamp(44px,8vh,72px);
+  }
+  .hero__copy{ grid-column:1; }
+  .hero__marks{ gap:6px 16px; font-size:11px; }
+}

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "forestcity",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4321"],
+      "port": 4321
+    },
+    {
+      "name": "forestcity-nav",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4322"],
+      "port": 4322
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+* text=auto
+# GitHub Pages reads this file literally — a CRLF here can break the custom
+# domain binding, so pin it to LF regardless of the checkout platform.
+CNAME text eol=lf

@@ -1,0 +1,7 @@
+# Claude Code local overrides (launch.json IS tracked — it runs the preview)
+.claude/settings.local.json
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store
