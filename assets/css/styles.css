@@ -519,25 +519,6 @@ p:last-child{ margin-bottom:0; }
    top border is the edge now, and it is a cleaner one than any fade. */
 
 
-/* -- service cards ----------------------------------------- */
-
-.cards{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
-.card{
-  position:relative; padding:32px 28px 30px;
-  background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r);
-  transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
-}
-.card:hover{
-  border-color:var(--forest); transform:translateY(-3px);
-  box-shadow:0 14px 40px -22px rgba(92,191,141,.35);
-}
-.card__num{
-  font-family:var(--font-mono); font-size:12px; letter-spacing:.14em;
-  color:var(--forest); display:block; margin-bottom:22px;
-}
-.card h3{ font-family:var(--font-display); font-size:23px; font-weight:700; letter-spacing:-0.022em; margin-bottom:12px; }
-.card p{ color:var(--ink-2); font-size:15.5px; }
-
 .ticks{ list-style:none; margin:20px 0 0; padding:0; }
 .ticks li{
   position:relative; padding-left:24px; margin-bottom:9px;
@@ -716,32 +697,89 @@ p:last-child{ margin-bottom:0; }
 .section--canopy .section__head .section__lead{ color:#E6EFE8; }
 .section--canopy .section__head .kicker{ color:var(--forest-line); }
 
-/* The lead card. Websites and hosting are the biggest ticket and the thing
-   every other service ends up hanging off, so card 01 spans two columns and
-   is the only card on a dark ground. The grid is 3 columns and the five
-   cards fill 2+1+1+1+1 = six cells exactly, so nothing is left orphaned on
-   a row of its own. Add a sixth service and this stops working — either
-   drop the span or go to four columns. */
-.card--lead{
-  grid-column:span 2;
-  background:var(--panel); border-color:#20503A;
-  color:var(--ink);
-  display:grid; grid-template-columns:1fr 1fr; gap:10px 34px;
-  align-content:start;
+/* -- what we do: the two streams --------------------------- */
+/* Websites & software, then ad campaigns. Each is a labelled box, and the
+   second is mirrored so the pair doesn't read as the same thing twice. */
+
+.tag{ display:inline-block; font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  padding:4px 8px; border:1px solid #2F5A45; color:var(--forest-bright); border-radius:4px; }
+.tag--add{ border-color:#3C5A7A; color:var(--jay-pale); }
+
+/* one stream = a label above, a box below */
+.stream + .stream{ margin-top:clamp(48px,6vw,80px); }
+.stream__label{ display:flex; align-items:center; gap:16px; margin:0 0 20px;
+  font-family:var(--font-pixel); font-size:clamp(20px,2.2vw,28px); letter-spacing:.06em; text-transform:uppercase; color:#fff; }
+.stream__label::after{ content:""; flex:1; height:2px; background:linear-gradient(90deg, var(--forest), rgba(92,191,141,0)); }
+.stream__label b{ font-weight:400; font-size:.8em; color:#07120C; background:var(--forest); padding:4px 9px 3px; border-radius:4px; }
+
+.stream__box{ display:grid; grid-template-columns:1fr 1.05fr; gap:clamp(28px,4vw,56px); align-items:stretch;
+  background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r); padding:clamp(26px,3.4vw,44px); }
+/* the campaigns box mirrors the first, so the two don't read as a repeat */
+.stream--flip .stream__box{ grid-template-columns:1.05fr 1fr; align-items:stretch; }
+.stream--flip .stream__art{ order:-1; }
+
+.stream__pixel{ font-family:var(--font-pixel); font-size:clamp(26px,3vw,38px); line-height:1.15; color:var(--ink); margin:0 0 16px; letter-spacing:.02em; }
+.stream__pixel em{ font-style:normal; color:var(--jay-pale); }
+.stream__box p{ color:var(--ink-2); margin:0 0 18px; }
+
+.stream__list{ list-style:none; padding:0; margin:0; }
+.stream__list li{ display:grid; grid-template-columns:1fr auto; gap:2px 12px; padding:14px 0; border-top:1px solid var(--line); }
+.stream__list b{ color:var(--ink); font-weight:600; }
+.stream__list small{ grid-column:1 / -1; color:var(--ink-2); font-size:14.5px; }
+
+/* the landing pages, fanned. The stage stretches to the height of the copy
+   beside it, and each card is sized off the stage in both directions, so it
+   fills the column without ever outgrowing it. */
+.stack{ display:flex; flex-direction:column; gap:14px; margin:0; min-height:320px; }
+.stack__stage{ position:relative; flex:1; container-type:size; }
+.stack__card{
+  --w:min(80cqw, 64cqh * 1.6); --h:calc(var(--w) / 1.6);
+  --x:0px; --y:0px; --r:0deg; --lift:0px;
+  position:absolute; left:0; top:0; width:var(--w); height:var(--h); padding:0; cursor:zoom-in;
+  border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#000;
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.85);
+  transform:translate(var(--x), calc(var(--y) + var(--lift))) rotate(var(--r));
+  transition:transform .75s cubic-bezier(.2,.7,.2,1), opacity .35s ease, filter .75s ease, border-color .2s ease;
 }
-.card--lead:hover{ border-color:var(--forest-bright); }
-.card--lead .card__num{ color:var(--forest); grid-column:1 / -1; }
-.card--lead h3{ grid-column:1 / -1; font-size:29px; color:var(--ink); }
-.card--lead p{ color:#C7D9CC; font-size:16px; margin:0; }
-.card--lead .ticks{ margin-top:0; }
-.card--lead .ticks li{ color:#C7D9CC; }
-.card--lead .ticks li::before{ background:var(--forest); }
-.card--lead .card__flag{
-  grid-column:1 / -1;
-  font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--forest);
-  margin:6px 0 0; padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.14);
+.stack__card img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
+.stack__card[data-slot="0"]{ --r:-3deg; z-index:1; filter:brightness(.7); }
+.stack__card[data-slot="1"]{ --x:calc(100cqw - var(--w)); --y:calc((100cqh - var(--h)) * .45); --r:2deg; z-index:2; filter:brightness(.88); }
+.stack__card[data-slot="2"]{ --x:calc((100cqw - var(--w)) * .35); --y:calc(100cqh - var(--h)); --r:-1deg; z-index:3; }
+.stack__card:hover, .stack__card:focus-visible{ --lift:-8px; filter:none; border-color:var(--forest); }
+.stack__card:focus-visible{ outline:2px solid var(--forest-bright); outline-offset:3px; }
+/* the front card steps out before it goes to the back of the pile */
+.stack__card.is-out{ opacity:0; --lift:24px; }
+.stack figcaption{ text-align:right; font-family:var(--font-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+
+/* enlarged view */
+.shot-view{ width:min(1200px, 94vw); max-width:none; max-height:94vh; padding:0; border:1px solid var(--line);
+  border-radius:var(--r); background:var(--bg-3); color:var(--ink); overflow:hidden; }
+.shot-view::backdrop{ background:rgba(4,6,5,.82); backdrop-filter:blur(3px); }
+.shot-view img{ display:block; width:100%; height:auto; max-height:calc(94vh - 64px); object-fit:contain; background:#000; }
+.shot-view__bar{ display:flex; align-items:center; gap:10px; padding:14px 18px; }
+.shot-view__bar p{ margin:0; flex:1; font-size:15px; color:var(--ink-2); }
+.shot-view__bar b{ color:var(--ink); margin-right:8px; }
+.shot-view__bar button{ font:500 13px var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink);
+  background:none; border:1px solid var(--line-2); border-radius:6px; padding:8px 12px; cursor:pointer; }
+.shot-view__bar button:hover{ border-color:var(--forest); color:var(--forest-bright); }
+
+/* no transitions until the pile has been laid out once, or it slides in from the corner on load */
+.stack:not(.is-live) .stack__card{ transition:none; }
+@media (prefers-reduced-motion:reduce){ .stack__card{ transition:none; } }
+
+/* budget -> plan -> run */
+.flow{ list-style:none; margin:0; padding:0; display:grid; gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:var(--r); overflow:hidden; grid-auto-rows:1fr; }
+.flow li{ background:#0F1410; padding:24px clamp(22px,2.4vw,34px); display:grid; grid-template-columns:auto 1fr; gap:6px 22px; align-content:center; }
+.flow .n{ grid-row:span 2; font-family:var(--font-pixel); color:var(--forest); font-size:clamp(34px,3.4vw,46px); line-height:1; align-self:center; }
+.flow h4{ margin:0; font-family:var(--font-display); font-size:clamp(19px,1.7vw,23px); letter-spacing:-.015em; color:var(--ink); }
+.flow p{ margin:0; font-size:16px; color:var(--ink-2); }
+
+@media (max-width:900px){
+  .stream__box, .stream--flip .stream__box{ grid-template-columns:1fr; }
+  .stream--flip .stream__art{ order:0; }
+  .stack{ min-height:0; }
+  .stack__stage{ flex:none; aspect-ratio:1 / .85; }
 }
 
 /* -- the bundle tiers -------------------------------------- */
@@ -1109,13 +1147,6 @@ p:last-child{ margin-bottom:0; }
 .foot__mono{ font-family:var(--font-mono); color:var(--forest); }
 
 /* -- responsive -------------------------------------------- */
-
-@media (max-width:1080px){
-  .cards{ grid-template-columns:1fr; }
-  /* one column: the span and the lead card's inner two-up both have to go */
-  .card--lead{ grid-column:span 1; grid-template-columns:1fr; gap:10px; }
-  .card--lead .ticks{ margin-top:8px; }
-}
 
 /* The narrow end of the desktop nav — just above the 900px mobile
    breakpoint — is where this row has always run out of width. It is the

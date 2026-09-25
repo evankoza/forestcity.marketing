@@ -305,11 +305,12 @@ you add paler text to the hero, re-check it rather than assuming headroom.
 
 It used to be `#bundle`, its own full section between the services and the
 switch. It is a **pricing note on the services**, not a second pitch, so it
-now sits under the cards inside `#services` as `.tiers`: three steps, the
-more services you take the bigger the discount.
+now sits under the two streams inside `#services` as `.tiers`: take both
+streams and the second one gets cheaper.
 
 Folding it in removed a section from the page (the kickers renumbered 01-06),
-two nav links and a footer link, and the `.bundle` / `.stack` rules with it.
+two nav links and a footer link, and the `.bundle` rules with it. (`.stack`
+went then too; the name is back, for the screenshot pile in the websites stream.)
 `--bark` went too — it existed only for that section's maths panel.
 
 **It quotes no numbers, on purpose.** There was a ladder of three
