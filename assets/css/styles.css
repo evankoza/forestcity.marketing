@@ -333,7 +333,8 @@ p:last-child{ margin-bottom:0; }
 .nav__links a:hover{ background:rgba(92,191,141,.13); color:var(--ink); }
 /* 8.4:1. The chip is the same green as the solid button, so the pair at the
    right-hand end of the row reads as one system rather than two greens. */
-.nav__links a.is-active{ background:var(--forest); color:#07120C; font-weight:600; }
+.nav__links a.is-active,
+.nav__links a[aria-current="page"]{ background:var(--forest); color:#07120C; font-weight:600; }
 
 /* Overrides .btn--sm's 11px, and must stay after it in the file - the two
    selectors weigh the same, so source order is what decides. */
@@ -1163,11 +1164,15 @@ p:last-child{ margin-bottom:0; }
    window across it. The ladder is 24 / 21 / 18 now: even steps of three,
    and every one of them measured rather than guessed. At 981px, the tight
    end of this step's range, 21px leaves 42.5px of slack and the row does
-   not overflow until 24. */
-@media (max-width:1100px){
+   not overflow until 24.
+
+   Five links since Team joined ("Free SEO check" became "SEO check" to make
+   room). The step moved up from 1100 to 1140 and the link padding came in
+   from 11 to 9: on a fresh load, 1101 had 4px of slack at the old values. */
+@media (max-width:1140px){
   .brand__word{ font-size:21px; }
-  .nav__inner{ gap:18px; }
-  .nav__links a{ font-size:14px; padding:7px 11px; }
+  .nav__inner{ gap:16px; }
+  .nav__links a{ font-size:14px; padding:7px 9px; }
   .nav.is-stuck .nav__inner{ padding-inline:12px; }
 }
 
@@ -1194,11 +1199,15 @@ p:last-child{ margin-bottom:0; }
    doing that here returned 1.4px where a reload at the same width returns
    23.3. Every number above is from a reload. The previous note measured a
    layout that predates the segmented group, so its figure is not comparable
-   to these - but its warning was the right one. */
+   to these - but its warning was the right one.
+
+   The table above predates the fifth link. With Team added, 901 overflowed
+   by 11px at a 10px link padding and a 14px gap; 7 and 12 buy it back.
+   Re-measure if a link is added or renamed. */
 @media (max-width:980px){
   .brand__word{ font-size:18px; }
-  .nav__inner{ gap:14px; }
-  .nav__links a{ padding:7px 10px; }
+  .nav__inner{ gap:12px; }
+  .nav__links a{ padding:7px 7px; }
   .nav__cta{ padding:10px 15px; }
 }
 
@@ -1408,6 +1417,37 @@ p:last-child{ margin-bottom:0; }
    the flat 38px at 442, which is where 38 fits again. */
 @media (max-width:440px){
   .hero__title{ font-size:min(38px,8.6vw); }
+}
+
+/* ==============================================================
+   TEAM PAGE  (team.html)
+
+   One card per person: photo on the left, name (and later role and
+   bio) on the right. There are no headshots yet, so each photo slot
+   holds a generated pixel head-and-shoulders (the #placeholder-portrait
+   symbol at the top of team.html). When a real photo arrives, swap the
+   <svg> for an <img>.
+   ============================================================== */
+.team{ padding-block:clamp(48px,7vw,88px) clamp(64px,9vw,112px); }
+.team__grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(20px,2.4vw,28px); }
+.person{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:clamp(20px,2.4vw,30px);
+  background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r); padding:clamp(20px,2.4vw,28px); }
+.person__photo{ position:relative; margin:0; aspect-ratio:4 / 5; border-radius:10px; overflow:hidden;
+  background:#141C17; border:1px solid var(--line); display:grid; place-items:end center; }
+.person__photo::before{ content:""; position:absolute; inset:0; background:var(--dot); background-size:6px 6px; opacity:.55; }
+.person__photo svg{ position:relative; width:86%; height:auto; }
+.person__name{ font-family:var(--font-pixel); font-size:clamp(22px,2.2vw,28px); line-height:1.1; letter-spacing:.02em;
+  color:var(--ink); margin:0; }
+
+.team__meet{ margin-top:clamp(40px,5vw,64px); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px 32px;
+  padding:clamp(24px,3vw,36px); border:1px solid #20503A; background:var(--panel); border-radius:var(--r); }
+.team__meet h2{ font-family:var(--font-display); font-weight:800; font-size:clamp(24px,2.6vw,32px); letter-spacing:-.03em; line-height:1.05; color:#fff; margin:0 0 6px; }
+.team__meet p{ margin:0; color:#C7D9CC; max-width:52ch; }
+
+@media (max-width:1080px){ .team__grid{ grid-template-columns:1fr; } }
+@media (max-width:560px){
+  .person{ grid-template-columns:1fr; }
+  .person__photo{ max-width:280px; }
 }
 
 /* ==============================================================
