@@ -36,8 +36,10 @@
   const show = i => {
     at = (i + cards.length) % cards.length;
     const c = cards[at];
-    img.src = c.dataset.full; img.alt = c.dataset.title + ', ' + c.dataset.note;
-    title.textContent = c.dataset.title; note.textContent = c.dataset.note;
+    const { title: t = '', note: n = '' } = c.dataset;   // a card can go uncaptioned
+    img.src = c.dataset.full;
+    img.alt = [t, n].filter(Boolean).join(', ') || c.querySelector('img').alt.replace(/^Enlarge: /, '');
+    title.textContent = t; note.textContent = n;
   };
   cards.forEach((c, i) => c.addEventListener('click', () => { show(i); view.showModal(); }));
   view.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => show(at + +b.dataset.step)));
