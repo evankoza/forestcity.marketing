@@ -28,20 +28,39 @@
   stage.addEventListener('pointerleave', () => paused = false);
   stage.addEventListener('focusin',  () => paused = true);
   stage.addEventListener('focusout', () => paused = false);
-  new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(stage);
+  // Cards with data-clip get their animation looped over the screenshot,
+  // unless motion is reduced. Clips only play while the pile is on screen.
+  const clips = still ? [] : cards.filter(c => c.dataset.clip).map(c => {
+    const v = Object.assign(document.createElement('video'), { muted: true, loop: true, playsInline: true, preload: 'none' });
+    v.poster = c.querySelector('img').src;
+    v.src = c.dataset.clip;
+    v.setAttribute('aria-hidden', 'true');
+    c.append(v);
+    return v;
+  });
+  const playClips = on => clips.forEach(v => on ? v.play().catch(() => {}) : v.pause());
+
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; playClips(visible && !view.open); }).observe(stage);
+  // browsers pause silent video in background tabs; pick back up on return
+  document.addEventListener('visibilitychange', () => playClips(!document.hidden && visible && !view.open));
 
   // Enlarge, with previous / next and the arrow keys
-  const img = view.querySelector('img'), title = view.querySelector('b'), note = view.querySelector('p span');
+  const img = view.querySelector('img'), clip = view.querySelector('video'), title = view.querySelector('b'), note = view.querySelector('p span');
   let at = 0;
   const show = i => {
     at = (i + cards.length) % cards.length;
     const c = cards[at];
     const { title: t = '', note: n = '' } = c.dataset;   // a card can go uncaptioned
     img.src = c.dataset.full;
+    const moving = !still && c.dataset.clipFull;
+    img.hidden = !!moving; clip.hidden = !moving;
+    if (moving) { clip.poster = c.dataset.full; clip.src = c.dataset.clipFull; clip.play().catch(() => {}); }
+    else clip.removeAttribute('src');
     img.alt = [t, n].filter(Boolean).join(', ') || c.querySelector('img').alt.replace(/^Enlarge: /, '');
     title.textContent = t; note.textContent = n;
   };
-  cards.forEach((c, i) => c.addEventListener('click', () => { show(i); view.showModal(); }));
+  cards.forEach((c, i) => c.addEventListener('click', () => { show(i); view.showModal(); playClips(false); }));
+  view.addEventListener('close', () => { clip.pause(); clip.removeAttribute('src'); playClips(visible); });
   view.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => show(at + +b.dataset.step)));
   view.querySelector('[data-close]').addEventListener('click', () => view.close());
   view.addEventListener('click', e => { if (e.target === view) view.close(); });   // the backdrop

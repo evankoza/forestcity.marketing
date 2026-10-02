@@ -743,6 +743,8 @@ p:last-child{ margin-bottom:0; }
   transition:transform .75s cubic-bezier(.2,.7,.2,1), opacity .35s ease, filter .75s ease, border-color .2s ease;
 }
 .stack__card img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
+/* work.js lays a looping clip over the screenshot; the screenshot stays as poster and alt text */
+.stack__card video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; }
 .stack__card[data-slot="0"]{ --r:-3deg; z-index:1; filter:brightness(.7); }
 .stack__card[data-slot="1"]{ --x:calc(100cqw - var(--w)); --y:calc((100cqh - var(--h)) * .45); --r:2deg; z-index:2; filter:brightness(.88); }
 .stack__card[data-slot="2"]{ --x:calc((100cqw - var(--w)) * .35); --y:calc(100cqh - var(--h)); --r:-1deg; z-index:3; }
@@ -756,7 +758,8 @@ p:last-child{ margin-bottom:0; }
 .shot-view{ width:min(1200px, 94vw); max-width:none; max-height:94vh; padding:0; border:1px solid var(--line);
   border-radius:var(--r); background:var(--bg-3); color:var(--ink); overflow:hidden; }
 .shot-view::backdrop{ background:rgba(4,6,5,.82); backdrop-filter:blur(3px); }
-.shot-view img{ display:block; width:100%; height:auto; max-height:calc(94vh - 64px); object-fit:contain; background:#000; }
+.shot-view img, .shot-view video{ display:block; width:100%; height:auto; max-height:calc(94vh - 64px); object-fit:contain; background:#000; }
+.shot-view [hidden]{ display:none; }
 .shot-view__bar{ display:flex; align-items:center; gap:10px; padding:14px 18px; }
 .shot-view__bar p{ margin:0; flex:1; font-size:15px; color:var(--ink-2); }
 .shot-view__bar b{ color:var(--ink); margin-right:8px; }
