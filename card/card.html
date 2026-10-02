@@ -189,20 +189,25 @@ body{
 /* The jay, sized by its width and hung off its own foot.
 
    --foot-x/--foot-y are printed by bird2svg.js: where the lowest TOE sits
-   in the artwork, as a fraction of it. They are not 50% and 100%. The
-   sprite's bottom edge is the tail, which on this frame hangs 2% of the
-   height below the toes, and its middle is the belly, which is nowhere
-   near the feet. Place the bird by its box instead of by these and it
-   stands beside the branch rather than on it.
+   in the artwork, as a fraction of it. They have to be copied back here
+   every time that script is re-run, and so does --bird-h, which is the
+   artwork's aspect ratio written out. The script's edge handling decides
+   which cells survive at the tail and at the toes, so the trimmed box
+   changes shape whenever it changes — 51x49 cells with the foot at 98%
+   became 51x48 with the foot at 100% the last time, and a bird hung off
+   the stale numbers stands a fiftieth of an inch inside the bark.
+
+   Neither number is a guess at the middle. --foot-x is 70% because the
+   middle of this artwork is the belly, not the feet.
 
    1.15in is wider than the hero's 15%-of-the-photo, deliberately: a card
    is held at arm's length, the bird is the whole point of it, and at the
    hero's proportion it came out the size of a postage stamp. */
 .front__bird{
   --foot-x: 0.696;                          /* from bird2svg.js */
-  --foot-y: 0.980;
+  --foot-y: 1.000;
   --bird-w: 1.15in;
-  --bird-h: calc(var(--bird-w) * 49 / 51);  /* the artwork's own ratio */
+  --bird-h: calc(var(--bird-w) * 48 / 51);  /* the artwork's own ratio */
   position:absolute;
   left:calc(var(--toe-x) - var(--foot-x) * var(--bird-w));
   top:calc(var(--toe-y) - var(--foot-y) * var(--bird-h));
